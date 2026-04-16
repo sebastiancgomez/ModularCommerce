@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { margin: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #1A1A1A; border-radius: 8px; overflow: hidden; font-family: sans-serif; }
+        .header { background-color: #1A1A1A; padding: 30px; text-align: center; border-bottom: 3px solid #DC143C; }
+        .header h1 { color: #FFFFFF; margin: 0; text-transform: uppercase; }
+        .header span { color: #DC143C; }
+        .content { padding: 40px; text-align: center; color: #FFFFFF; }
+        .code-box { display: inline-block; margin: 30px 0; padding: 20px 40px; background-color: #DC143C; color: #FFFFFF; font-size: 32px; font-weight: bold; border-radius: 5px; }
+        .footer { background-color: #111111; padding: 20px; text-align: center; font-size: 12px; color: #666666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><h1>Mis <span>Bellas</span></h1></div>
+        <div class="content">
+            <h2>C&oacute;digo de Verificaci&oacute;n</h2>
+            <p>&iexcl;Hola! Gracias por ser una de <strong>Mis Bellas</strong>. Estamos felices de acompa&ntilde;arte.</p>
+            
+            <p>Usa este c&oacute;digo para completar tu orden y finalizar tu compra:</p>
+    
+            <div class="code-box">
+                {OTP_CODE}
+            </div>
+
+            <p style="font-size: 13px;">Este c&oacute;digo expirar&aacute; en 10 minutos por tu seguridad.</p>
+            <p style="font-size: 12px; color: #888;">Si no solicitaste este correo, puedes ignorarlo.</p>
+        </div>
+        <div class="footer">&copy; 2026 Mis Bellas.</div>
+    </div>
+</body>
+</html>

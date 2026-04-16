@@ -1,0 +1,55 @@
+
+services:
+
+  postgres:
+    image: postgres:17
+    container_name: modularcommerce-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: src/ModularCommerce.Api/Dockerfile
+    container_name: modularcommerce-api
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: ModularCommerce
+      Jwt__Audience: ModularCommerceUsers
+
+      Smtp__Host: ${SMTP_HOST}
+      Smtp__Port: ${SMTP_PORT}
+      Smtp__User: ${SMTP_USER}
+      Smtp__Pass: ${SMTP_PASS}
+
+      Storage__ReceiptPath: receipts
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
+    depends_on:
+      - postgres
+    command: >
+        sh -c "
+        dotnet ef database update --project ../ModularCommerce.Infrastructure --startup-project . &&
+        dotnet ModularCommerce.Api.dll"
+
+volumes:
+  pgdata:

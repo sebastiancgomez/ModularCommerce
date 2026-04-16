@@ -1,0 +1,6 @@
+@ModularCommerce.Api_HostAddress = http://localhost:5191
+
+GET {{ModularCommerce.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
