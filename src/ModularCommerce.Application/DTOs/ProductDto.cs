@@ -21,7 +21,9 @@ namespace ModularCommerce.Application.DTOs
         public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public int Stock { get; set; }
+        public Guid CategoryId { get; set; }
         public string CategoryName { get; set; } = string.Empty;
+        public Guid SubCategoryId { get; set; }
         public string SubCategoryName { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public string? Brand { get; set; }

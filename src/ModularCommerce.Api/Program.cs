@@ -13,6 +13,16 @@ using System.Text;
 Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyCorsPolicy",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // URL de tu Next.js
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 builder.Services.AddControllers();
 
@@ -77,6 +87,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+app.UseCors("MyCorsPolicy");
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

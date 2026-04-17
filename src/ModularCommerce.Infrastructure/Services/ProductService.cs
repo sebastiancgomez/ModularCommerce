@@ -26,7 +26,9 @@ public class ProductService : IProductService
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
+                CategoryId = p.CategoryId,
                 CategoryName = p.Category.Name,
+                SubCategoryId = p.SubCategoryId,
                 SubCategoryName = p.SubCategory.Name,
                 Stock = p.Stock,
                 Brand = p.Brand,
@@ -46,7 +48,9 @@ public class ProductService : IProductService
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
+                CategoryId = p.CategoryId,
                 CategoryName = p.Category.Name,
+                SubCategoryId = p.SubCategoryId,
                 SubCategoryName = p.SubCategory.Name,
                 Stock = p.Stock,
                 Brand = p.Brand,
@@ -73,6 +77,7 @@ public class ProductService : IProductService
 
         var product = new Product
         {
+            SKU = dto.SKU,
             Name = dto.Name,
             Description = dto.Description,
             Price = dto.Price,
