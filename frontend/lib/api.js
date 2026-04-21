@@ -11,17 +11,17 @@ export async function getProducts() {
 }
 
 export async function createProduct(payload) {
-  const res = await fetchWithAuth(`${BASE_URL}/products`, {
+  const res = await fetchWithAuth(`${BASE_URL}/admin/products`, {
     method: "POST",
     body: JSON.stringify(payload)
   });
-
+  console.log(res);
   if (!res.ok) throw new Error("Error creating product");
   return res.json();
 }
 
 export async function updateProduct(id, payload) {
-  const res = await fetchWithAuth(`${BASE_URL}/products/${id}`, {
+  const res = await fetchWithAuth(`${BASE_URL}/admin/products/${id}`, {
     method: "PUT",
     body: JSON.stringify(payload)
   });
@@ -39,7 +39,6 @@ export async function getCategories() {
 }
 
 export async function createCategory(payload) {
-  console.log(payload);
   const res = await fetchWithAuth(`${BASE_URL}/categories`, {
     method: "POST",
     body: JSON.stringify(payload)
@@ -88,10 +87,12 @@ export async function login(payload) {
 
 
 function getAuthHeaders() {
-  const token =
-    typeof window !== "undefined"
-      ? localStorage.getItem("token")
-      : null;
+  if (typeof window === "undefined") return {};
+
+  const token = document.cookie
+    .split("; ")
+    .find(row => row.startsWith("token="))
+    ?.split("=")[1];
 
   return token
     ? { Authorization: `Bearer ${token}` }

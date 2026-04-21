@@ -22,6 +22,7 @@ export default function ProductAdmin() {
   const [subCategoryId, setSubCategoryId] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   type ProductForm = {
   sku: string;
@@ -84,6 +85,7 @@ export default function ProductAdmin() {
   }
 
   async function handleSubmit() {
+    setMessage(null);
     const payload = {
       ...form,
       price: Number(form.price),
@@ -114,8 +116,10 @@ export default function ProductAdmin() {
     try {
       if (editingId) {
         await updateProduct(editingId, form);
+        setMessage("Producto actualizado correctamente");
       } else {
         await createProduct(form);
+        setMessage("Producto creado correctamente");
       }
 
       await loadData();
@@ -233,6 +237,11 @@ export default function ProductAdmin() {
           {loading ? "Guardando..." : editingId ? "Actualizar" : "Crear"}
         </button>
       </div>
+      {message && (
+        <div className="success-message">
+          {message}
+        </div>
+      )}
 
       {/* FILTROS */}
       <div className="flex-row-sm">

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ModularCommerce.Domain.Entities;
 using ModularCommerce.Application.DTOs;
 using ModularCommerce.Application.Services;
+using ModularCommerce.Domain.Entities;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -15,6 +16,7 @@ public class CategoriesController : ControllerBase
         _service = service;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create(CreateCategoryDto dto)
     {
