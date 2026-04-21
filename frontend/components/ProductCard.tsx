@@ -10,6 +10,7 @@ export default function ProductCard({ product }: { product: Product }) {
         alt={product.name}
         width={200}
         height={200}
+        unoptimized
       />
 
       <h3 >{product.name}</h3>
