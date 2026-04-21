@@ -12,7 +12,7 @@ export default function ProductCard({ product }: { product: Product }) {
         height={200}
       />
 
-      <h4>{product.name}</h4>
+      <h3 >{product.name}</h3>
       <p>{product.subCategoryName}</p>
 
       <div className="price">${product.price}</div>

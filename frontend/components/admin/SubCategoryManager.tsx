@@ -39,31 +39,15 @@ export default function SubCategoryManager({
   }
 
   return (
-    <div style={{
-        background: "#111",
-        border: "1px solid #333",
-        borderRadius: 10,
-        padding: 16,
-        marginBottom: 20
-        }}>
-        <h2 style={{ marginBottom: 12 }}>Subcategories</h2>
+    <div>
+      <div className="card">
+        <h2 className="card-header">Crear Subcategoria</h2>
 
-        <div style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: 8,
-            marginBottom: 16
-        }}>
+        <div className="grid-2">
             <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            style={{
-                padding: 10,
-                borderRadius: 6,
-                border: "1px solid #444",
-                background: "#0a0a0a",
-                color: "#fff"
-            }}
+            className="select"
             >
             <option value="">Category</option>
             {categories.map((c) => (
@@ -77,45 +61,36 @@ export default function SubCategoryManager({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Subcategory"
-            style={{
-                padding: 10,
-                borderRadius: 6,
-                border: "1px solid #444",
-                background: "#0a0a0a",
-                color: "#fff"
-            }}
+           className="input"
             />
-
-            <button
-            onClick={handleCreate}
-            style={{
-                padding: 10,
-                borderRadius: 6,
-                border: "1px solid #444",
-                background: "#1f1f1f",
-                color: "#fff"
-            }}
-            >
-            Create
-            </button>
         </div>
-
+        <div>
+          <button
+              onClick={handleCreate}
+            className="button button-full"
+              >
+              Create
+          </button>
+        </div>
+      </div>
+      <div className="card">  
+        <h2 className="card-header">Subcategorias Existentes</h2>
+        <div className="grid-2">
+          <h3 className="card-header">SubCategoria</h3>
+          <h3 className="card-header">Categoria</h3>
+        </div>
         <div>
             {subCategories.map((s) => (
             <div
                 key={s.id}
-                style={{
-                padding: 10,
-                borderBottom: "1px solid #222",
-                display: "flex",
-                justifyContent: "space-between"
-                }}
+                className="grid-2"
             >
-                <span>{s.name}</span>
-                <span style={{ color: "#888" }}>{s.categoryName}</span>
+                <span className="input">{s.name}</span>
+                <span className="input" style={{ color: "#888" }}>{s.categoryName}</span>
             </div>
             ))}
         </div>
+    </div>
     </div>
   );
 }

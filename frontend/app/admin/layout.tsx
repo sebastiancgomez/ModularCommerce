@@ -1,5 +1,5 @@
-import Header from "./Header";
-import Navbar from "@/components/Navbar";
+import AdminHeader from "@/components/admin/AdminHeader";
+import AdminNavbar from "@/components/admin/AdminNavBar";
 
 export default function AdminLayout({
   children
@@ -8,12 +8,9 @@ export default function AdminLayout({
 }) {
   return (
     <div>
-      <Header />
-      <Navbar />
-
-      <main style={{ padding: 20 }}>
-        {children}
-      </main>
+      <AdminHeader />
+      <AdminNavbar />
+      <main className="page">{children}</main>
     </div>
   );
 }

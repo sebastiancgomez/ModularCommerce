@@ -1,4 +1,4 @@
-import Header from "../components/Header";
+import Header from "../components/BuyerHeader";
 import Navbar from "../components/Navbar";
 import ProductGrid from "../components/ProductGrid";
 import { getProducts } from "../lib/api";
@@ -23,7 +23,7 @@ export default async function Home() {
 
       {Object.entries(grouped).map(([category, items]) => (
         <div key={category} className="section">
-          <h2 style={{ padding: "20px" }}>{category}</h2>
+          <h2 className="section-title">{category}</h2>
           <ProductGrid products={items} />
         </div>
       ))}

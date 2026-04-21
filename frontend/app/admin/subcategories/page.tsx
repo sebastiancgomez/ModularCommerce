@@ -8,7 +8,7 @@ export default async function SubCategoriesPage() {
   ]);
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="page">
       <h1>Subcategorías</h1>
 
       <SubCategoryManager

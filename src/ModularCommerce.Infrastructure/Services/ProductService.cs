@@ -24,7 +24,9 @@ public class ProductService : IProductService
             .Select(p => new ProductResponseDto
             {
                 Id = p.Id,
+                SKU = p.SKU,
                 Name = p.Name,
+                Description = p.Description,
                 Price = p.Price,
                 CategoryId = p.CategoryId,
                 CategoryName = p.Category.Name,
@@ -46,7 +48,9 @@ public class ProductService : IProductService
             .Select(p => new ProductResponseDto
             {
                 Id = p.Id,
+                SKU = p.SKU,
                 Name = p.Name,
+                Description = p.Description,
                 Price = p.Price,
                 CategoryId = p.CategoryId,
                 CategoryName = p.Category.Name,
@@ -92,5 +96,35 @@ public class ProductService : IProductService
         await _context.SaveChangesAsync();
 
         return product.Id;
+    }
+    public async Task<bool> Update(UpdateProductDto dto, Guid id)
+    {
+        var product = await GetById(id);
+        if (product == null)
+        {
+            throw new BusinessException($"El procucto{id} no existe");
+        }
+        var categoryExists = await _context.Categories
+            .AnyAsync(c => c.Id == dto.CategoryId);
+
+        if (!categoryExists)
+            throw new BusinessException("Categoria no encontrada");
+
+        var subCategoryExists = await _context.SubCategories
+            .AnyAsync(sc => sc.Id == dto.SubCategoryId);
+
+        if (!subCategoryExists)
+            throw new BusinessException("SubCategoria no encontrada");
+
+        product.Name = dto.Name;
+        product.Price = dto.Price;
+        product.Stock = dto.Stock;
+        product.Brand = dto.Brand;
+        product.ImageUrl = dto.ImageUrl;
+        product.CategoryId = dto.CategoryId;
+        product.SubCategoryId = dto.SubCategoryId;
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 }

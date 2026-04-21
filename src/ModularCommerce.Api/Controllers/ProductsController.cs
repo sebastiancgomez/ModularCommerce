@@ -28,10 +28,4 @@ public class ProductsController : ControllerBase
         return Ok(product);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create(CreateProductDto dto)
-    {
-        var id = await _service.Create(dto);
-        return Ok(id);
-    }
 }

@@ -11,9 +11,8 @@ export async function getProducts() {
 }
 
 export async function createProduct(payload) {
-  const res = await fetch(`${BASE_URL}/products`, {
+  const res = await fetchWithAuth(`${BASE_URL}/products`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   });
 
@@ -21,20 +20,28 @@ export async function createProduct(payload) {
   return res.json();
 }
 
-export async function getCategories() {
-  const res = await fetch(`${BASE_URL}/categories`, {
-    cache: "no-store"
+export async function updateProduct(id, payload) {
+  const res = await fetchWithAuth(`${BASE_URL}/products/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload)
   });
 
+  if (!res.ok) throw new Error("Error updating product");
+  return res.json();
+}
+
+export async function getCategories() {
+  const res = await fetchWithAuth(`${BASE_URL}/categories`, {
+    cache: "no-store"
+  });
   if (!res.ok) throw new Error("Error fetching categories");
   return res.json();
 }
 
 export async function createCategory(payload) {
   console.log(payload);
-  const res = await fetch(`${BASE_URL}/categories`, {
+  const res = await fetchWithAuth(`${BASE_URL}/categories`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   });
 
@@ -43,8 +50,9 @@ export async function createCategory(payload) {
 }
 
 export async function getSubCategories() {
-  const res = await fetch(`${BASE_URL}/subcategories`, {
-    cache: "no-store"
+  const res = await fetchWithAuth(`${BASE_URL}/subcategories`, {
+    cache: "no-store",
+    method: "GET"
   });
 
   if (!res.ok) throw new Error("Error fetching subcategories");
@@ -52,9 +60,8 @@ export async function getSubCategories() {
 }
 
 export async function createSubCategory(payload) {
-  const res = await fetch(`${BASE_URL}/subcategories`, {
+  const res =await fetchWithAuth(`${BASE_URL}/subcategories`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   });
 
@@ -62,3 +69,55 @@ export async function createSubCategory(payload) {
   return res.json();
 }
 
+export async function login(payload) {
+  const res = await fetch(`${BASE_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!res.ok) throw new Error("Invalid credentials");
+  const data = await res.json();
+  document.cookie = `token=${data.token}; path=/`;
+
+  return data;
+}
+
+
+
+function getAuthHeaders() {
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("token")
+      : null;
+
+  return token
+    ? { Authorization: `Bearer ${token}` }
+    : {};
+}
+
+async function fetchWithAuth(url, options = {}) {
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+      ...(options.headers || {})
+    }
+  });
+
+  if (res.status === 401) {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    throw new Error("Unauthorized");
+  }
+
+  if (!res.ok) {
+    throw new Error("Request failed");
+  }
+  return res;
+}
