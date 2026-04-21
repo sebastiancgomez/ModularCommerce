@@ -1,0 +1,28 @@
+name: Build and Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Login to ACR
+        run: |
+          echo ${{ secrets.AZURE_ACR_PASSWORD }} | docker login ${{ secrets.AZURE_ACR_LOGIN_SERVER }} -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:latest \
+            ./src/ModularCommerce.Api
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:latest
