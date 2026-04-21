@@ -6,7 +6,7 @@ WORKDIR /src
 COPY . .
 
 # restaurar desde la API (resuelve dependencias de toda la solución)
-WORKDIR /src/src/ModularCommerce.Api
+WORKDIR /src/ModularCommerce.Api
 RUN dotnet restore
 
 RUN dotnet publish -c Release -o /app/publish
