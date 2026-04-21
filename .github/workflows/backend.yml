@@ -3,7 +3,11 @@ name: Backend CI/CD
 on:
   push:
     branches:
-      - develop
+      - main
+
+permissions:
+  id-token: write
+  contents: read      
 
 jobs:
   build-and-deploy:
