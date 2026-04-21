@@ -18,10 +18,7 @@ jobs:
           echo ${{ secrets.AZURE_ACR_PASSWORD }} | docker login ${{ secrets.AZURE_ACR_LOGIN_SERVER }} -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: |
-          docker build \
-            -t ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:latest \
-            ./src/ModularCommerce.Api
+        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }} -f src/ModularCommerce.Api/Dockerfile .
 
       - name: Push Docker image
         run: |
