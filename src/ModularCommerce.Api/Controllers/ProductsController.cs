@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using ModularCommerce.Application.DTOs;
 using ModularCommerce.Application.Services;
 
@@ -26,6 +28,22 @@ public class ProductsController : ControllerBase
         if (product == null) return NotFound();
 
         return Ok(product);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateProductDto dto)
+    {
+        var id = await _service.Create(dto);
+        return Ok(id);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(UpdateProductDto dto, Guid id)
+    {
+        var updated = await _service.Update(dto, id);
+        return Ok(id);
     }
 
 }

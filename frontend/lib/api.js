@@ -11,7 +11,7 @@ export async function getProducts() {
 }
 
 export async function createProduct(payload) {
-  const res = await fetchWithAuth(`${BASE_URL}/admin/products`, {
+  const res = await fetchWithAuth(`${BASE_URL}/products`, {
     method: "POST",
     body: JSON.stringify(payload)
   });
@@ -21,7 +21,7 @@ export async function createProduct(payload) {
 }
 
 export async function updateProduct(id, payload) {
-  const res = await fetchWithAuth(`${BASE_URL}/admin/products/${id}`, {
+  const res = await fetchWithAuth(`${BASE_URL}/products/${id}`, {
     method: "PUT",
     body: JSON.stringify(payload)
   });
