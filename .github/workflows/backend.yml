@@ -1,7 +1,10 @@
-name: Build and Deploy Backend
+name: Backend CI/CD
 
 on:
   push:
+    branches:
+      - develop
+  pull_request:
     branches:
       - main
 
@@ -10,16 +13,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Login to ACR
         run: |
-          echo ${{ secrets.AZURE_ACR_PASSWORD }} | docker login ${{ secrets.AZURE_ACR_LOGIN_SERVER }} -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
+          echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ secrets.ACR_LOGIN_SERVER }} -u ${{ secrets.ACR_USERNAME }} --password-stdin
 
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }} -f src/ModularCommerce.Api/Dockerfile .
-
-      - name: Push Docker image
+      - name: Build image
         run: |
-          docker push ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:latest
+          docker build \
+            -t ${{ secrets.ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }} \
+            -f src/ModularCommerce.Api/Dockerfile .
+
+      - name: Push image
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          images: ${{ secrets.ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }}
