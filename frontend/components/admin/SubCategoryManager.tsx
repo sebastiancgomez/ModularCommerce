@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { createSubCategory, getSubCategories } from "@/lib/api";
+import { useState, useEffect } from "react"; // 1. Importamos useEffect
+import { createSubCategory, getSubCategories, getCategories } from "@/lib/api"; // 2. Importamos getCategories
 import type { Category } from "@/types/Category";
 import type { SubCategory } from "@/types/SubCategory";
 
@@ -11,16 +11,34 @@ type Props = {
 };
 
 export default function SubCategoryManager({
-  categories,
+  categories: initialCategories, // Renombramos para claridad
   initialSubCategories
 }: Props) {
-  const [subCategories, setSubCategories] =
-    useState<SubCategory[]>(initialSubCategories);
+  // Estados para las listas
+  const [subCategories, setSubCategories] = useState<SubCategory[]>(initialSubCategories);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
 
+  // Estados para el formulario
   const [name, setName] = useState("");
   const [categoryId, setCategoryId] = useState("");
 
-  async function load() {
+  // 3. EFECTO DE CARGA DINÁMICA
+  useEffect(() => {
+    async function refreshData() {
+      // Cargamos categorías para el select y subcategorías para la lista simultáneamente
+      const [freshSubCats, freshCats] = await Promise.all([
+        getSubCategories(),
+        getCategories()
+      ]);
+      
+      setSubCategories(freshSubCats);
+      setCategories(freshCats);
+    }
+    
+    refreshData();
+  }, []); // Se ejecuta solo al cargar la página
+
+  async function loadSubCategories() {
     const data = await getSubCategories();
     setSubCategories(data);
   }
@@ -33,9 +51,10 @@ export default function SubCategoryManager({
       categoryId
     });
 
-    await load();
+    await loadSubCategories();
 
     setName("");
+    setCategoryId(""); // Opcional: resetear el select
   }
 
   return (
@@ -45,34 +64,35 @@ export default function SubCategoryManager({
 
         <div className="grid-2">
             <select
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            className="select"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              className="select"
             >
-            <option value="">Category</option>
-            {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                {c.name}
-                </option>
-            ))}
+              <option value="">Seleccione una Categoría</option>
+              {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+              ))}
             </select>
 
             <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Subcategory"
-           className="input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nueva Subcategoría"
+              className="input"
             />
         </div>
         <div>
           <button
-              onClick={handleCreate}
+            onClick={handleCreate}
             className="button button-full"
-              >
-              Create
+          >
+            Create
           </button>
         </div>
       </div>
+
       <div className="card">  
         <h2 className="card-header">Subcategorias Existentes</h2>
         <div className="grid-2">
@@ -86,7 +106,9 @@ export default function SubCategoryManager({
                 className="grid-2"
             >
                 <span className="input">{s.name}</span>
-                <span className="input" style={{ color: "#888" }}>{s.categoryName}</span>
+                <span className="input" style={{ color: "#888" }}>
+                  {s.categoryName || "Sin categoría"}
+                </span>
             </div>
             ))}
         </div>

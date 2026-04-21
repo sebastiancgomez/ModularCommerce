@@ -1,162 +1,245 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { createProduct } from "@/lib/api";
-import type { Category } from "@/types/Category";
-import type { SubCategory } from "@/types/SubCategory";
-import type { ProductCreate } from "@/types/ProductCreate";
+import { useEffect, useMemo, useState } from "react";
+import {
+  getProducts,
+  createProduct,
+  updateProduct,
+  getCategories
+} from "@/lib/api";
 
-type Props = {
-  categories: Category[];
-  subCategories: SubCategory[];
-};
+import { Product } from "@/types/Product";
+import { Category } from "@/types/Category";
+import Image from "next/image";
 
-export default function ProductAdminManager({
-  categories,
-  subCategories
-}: Props) {
-  const [form, setForm] = useState<ProductCreate>({
+export default function ProductManager() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Filtros de búsqueda en la galería
+  const [filterCategoryId, setFilterCategoryId] = useState("");
+  const [filterSubCategoryId, setFilterSubCategoryId] = useState("");
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const [form, setForm] = useState({
     sku: "",
     name: "",
     description: "",
-    price: 0,
-    stock: 0,
+    price: "",
+    stock: "",
     categoryId: "",
     subCategoryId: "",
     brand: "",
     imageUrl: ""
   });
 
-  const filteredSubCategories = useMemo(() => {
-    return subCategories.filter(
-      (s) => s.categoryId === form.categoryId
-    );
-  }, [form.categoryId, subCategories]);
+  useEffect(() => {
+    loadData();
+  }, []);
 
-  function updateField<K extends keyof ProductCreate>(
-    field: K,
-    value: ProductCreate[K]
-  ) {
-    setForm((prev) => ({
-        ...prev,
-        [field]: value
-    }));
+  async function loadData() {
+    try {
+      const [p, c] = await Promise.all([getProducts(), getCategories()]);
+      setProducts(p || []);
+      setCategories(c || []);
+    } catch (error) {
+      console.error("Error al cargar datos:", error);
+    }
   }
 
-  async function handleSubmit() {
-    if (
-      !form.sku ||
-      !form.name ||
-      !form.categoryId ||
-      !form.subCategoryId
-    ) return;
+  function update(field: string, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  }
 
-    await createProduct(form);
-
+  function resetForm() {
     setForm({
       sku: "",
       name: "",
       description: "",
-      price: 0,
-      stock: 0,
+      price: "",
+      stock: "",
       categoryId: "",
       subCategoryId: "",
       brand: "",
       imageUrl: ""
     });
+    setEditingId(null);
   }
 
+  async function handleSubmit() {
+    setMessage(null);
+    const payload = {
+      ...form,
+      price: Number(form.price),
+      stock: Number(form.stock)
+    };
+
+    if (isNaN(payload.price) || isNaN(payload.stock)) {
+      alert("Precio y stock deben ser números");
+      return;
+    }
+
+    if (!form.name || !form.sku || !form.categoryId || !form.subCategoryId) {
+      alert("Faltan campos obligatorios");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      if (editingId) {
+        await updateProduct(editingId, form);
+        setMessage("Producto actualizado correctamente");
+      } else {
+        await createProduct(form);
+        setMessage("Producto creado correctamente");
+      }
+      await loadData();
+      resetForm();
+    } catch  {
+      alert("Error guardando producto");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleEdit(p: Product) {
+    setEditingId(p.id);
+    setForm({
+      sku: p.sku ?? "",
+      name: p.name ?? "",
+      description: p.description ?? "",
+      price: p.price?.toString() ?? "0",
+      stock: p.stock?.toString() ?? "0",
+      categoryId: p.categoryId ?? "",
+      subCategoryId: p.subCategoryId ?? "",
+      brand: p.brand || "",
+      imageUrl: p.imageUrl || ""
+    });
+  }
+
+  // Subcategorías dinámicas para el formulario
+  const formSubCategories = useMemo(() => {
+    if (!form.categoryId) return [];
+    return categories.find((c) => c.id === form.categoryId)?.subCategories || [];
+  }, [form.categoryId, categories]);
+
+  // Subcategorías dinámicas para los filtros
+  const filterSubCategories = useMemo(() => {
+    if (!filterCategoryId) return [];
+    return categories.find((c) => c.id === filterCategoryId)?.subCategories || [];
+  }, [filterCategoryId, categories]);
+
+  // Galería de productos filtrada
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      const matchesCategory = !filterCategoryId || p.categoryId === filterCategoryId;
+      const matchesSubCategory = !filterSubCategoryId || p.subCategoryId === filterSubCategoryId;
+      return matchesCategory && matchesSubCategory;
+    });
+  }, [products, filterCategoryId, filterSubCategoryId]);
+
   return (
-    <div style={{
-        background: "#111",
-        border: "1px solid #333",
-        borderRadius: 10,
-        padding: 16
-    }}>
-      <h2 style={{ marginBottom: 12 }}>Products</h2>
-      
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 10
-      }}>
-        <input
-            placeholder="SKU"
-            value={form.sku}
-            onChange={(e) => updateField("sku", e.target.value)}
-        />
+    <div className="page">
+      <div className="card">
+        <h3 className="card-header">
+          {editingId ? "Editar producto" : "Crear producto"}
+        </h3>
 
-        <input
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) => updateField("name", e.target.value)}
-        />
-
-        <input
-            placeholder="Description"
-            value={form.description}
-            onChange={(e) => updateField("description", e.target.value)}
-        />
-
-        <input
-            type="number"
-            placeholder="Price"
-            value={form.price}
-            onChange={(e) => updateField("price", Number(e.target.value))}
-        />
-
-        <input
-            type="number"
-            placeholder="Stock"
-            value={form.stock}
-            onChange={(e) => updateField("stock", Number(e.target.value))}
-        />
-
-        <select
+        <div className="grid-2">
+          <input className="input" placeholder="SKU" value={form.sku} onChange={(e) => update("sku", e.target.value)} />
+          <input className="input" placeholder="Nombre" value={form.name} onChange={(e) => update("name", e.target.value)} />
+          <input className="input" placeholder="Descripción" value={form.description} onChange={(e) => update("description", e.target.value)} />
+          <input className="input" placeholder="Marca" value={form.brand} onChange={(e) => update("brand", e.target.value)} />
+          
+          <select
+            className="select"
             value={form.categoryId}
             onChange={(e) => {
-            updateField("categoryId", e.target.value);
-            updateField("subCategoryId", "");
+              update("categoryId", e.target.value);
+              update("subCategoryId", "");
             }}
-        >
-            <option value="">Category</option>
+          >
+            <option value="">Categoría</option>
             {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-                {c.name}
-            </option>
+              <option key={c.id} value={c.id}>{c.name}</option>
             ))}
+          </select>
+
+          <select
+            className="select"
+            value={form.subCategoryId}
+            onChange={(e) => update("subCategoryId", e.target.value)}
+          >
+            <option value="">Subcategoría</option>
+            {formSubCategories.map((s) => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
+
+          <input className="input" placeholder="Precio" value={form.price} onChange={(e) => update("price", e.target.value)} />
+          <input className="input" placeholder="Stock" value={form.stock} onChange={(e) => update("stock", e.target.value)} />
+          <input className="input" placeholder="Imagen URL" value={form.imageUrl} onChange={(e) => update("imageUrl", e.target.value)} />
+        </div>
+
+        <button className="button button-full" onClick={handleSubmit} disabled={loading}>
+          {loading ? "Guardando..." : editingId ? "Actualizar" : "Crear"}
+        </button>
+      </div>
+
+      {message && <div className="success-message">{message}</div>}
+
+      <div className="flex-row-sm">
+        <select
+          className="select"
+          value={filterCategoryId}
+          onChange={(e) => {
+            setFilterCategoryId(e.target.value);
+            setFilterSubCategoryId("");
+          }}
+        >
+          <option value="">Todas las categorías</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
         </select>
 
         <select
-            value={form.subCategoryId}
-            onChange={(e) =>
-            updateField("subCategoryId", e.target.value)
-            }
+          className="select"
+          value={filterSubCategoryId}
+          onChange={(e) => setFilterSubCategoryId(e.target.value)}
         >
-            <option value="">SubCategory</option>
-            {filteredSubCategories.map((s) => (
-            <option key={s.id} value={s.id}>
-                {s.name}
-            </option>
-            ))}
+          <option value="">Todas las subcategorías</option>
+          {filterSubCategories.map((s) => (
+            <option key={s.id} value={s.id}>{s.name}</option>
+          ))}
         </select>
+      </div>
 
-        <input
-            placeholder="Brand"
-            value={form.brand}
-            onChange={(e) => updateField("brand", e.target.value)}
-        />
-
-        <input
-            placeholder="Image URL"
-            value={form.imageUrl}
-            onChange={(e) => updateField("imageUrl", e.target.value)}
-        />
-
-        <button onClick={handleSubmit}>
-            Create Product
-        </button>
-    </div>
+      <div className="product-grid">
+        {filteredProducts.map((p) => (
+          <div key={p.id} className="product-card">
+            {p.imageUrl && (
+              <Image
+                src={p.imageUrl}
+                alt={p.name}
+                width={300}
+                height={200}
+                className="product-img"
+                unoptimized
+              />
+            )}
+            <div className="product-info">
+              <h4>{p.name}</h4>
+              <span>${p.price}</span>
+              <span>Stock: {p.stock}</span>
+            </div>
+            <button className="button" onClick={() => handleEdit(p)}>Editar</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
