@@ -45,6 +45,8 @@ jobs:
           output_location: "out"        # Next.js genera 'out' al usar 'next export'
           ####################################
           github_id_token: ${{ steps.idtoken.outputs.result }}
+        env:
+          NEXT_PUBLIC_API_URL: "https://modularcommerce-api.lemonflower-9dbaf244.canadacentral.azurecontainerapps.io/api"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
