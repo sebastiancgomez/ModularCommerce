@@ -1,15 +1,49 @@
-- name: Login to ACR
-  run: |
-    echo "${{ secrets.AZURE_ACR_PASSWORD }}" | docker login ${{ secrets.AZURE_ACR_LOGIN_SERVER }} -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
+name: Backend CI/CD
 
-- name: Build image
-  run: |
-    docker build \
-      -t ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }} \
-      -t ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:latest \
-      -f src/ModularCommerce.Api/Dockerfile .
+on:
+  push:
+    branches:
+      - develop
 
-- name: Push image
-  run: |
-    docker push ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }}
-    docker push ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:latest
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Login ACR
+      - name: Login to ACR
+        run: |
+          echo "${{ secrets.AZURE_ACR_PASSWORD }}" | docker login ${{ secrets.AZURE_ACR_LOGIN_SERVER }} -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
+
+      # Build image
+      - name: Build image
+        run: |
+          docker build \
+            -t ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }} \
+            -t ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:latest \
+            -f src/ModularCommerce.Api/Dockerfile .
+
+      # Push image
+      - name: Push image
+        run: |
+          docker push ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }}
+          docker push ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:latest
+
+      # Login Azure (sin secrets de password)
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Deploy a Container Apps
+      - name: Deploy to Container Apps
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          resourceGroup: rg-bookcatalog-dev
+          containerAppName: modularcommerce-api
+          imageToDeploy: ${{ secrets.AZURE_ACR_LOGIN_SERVER }}/modularcommerce-api:${{ github.sha }}
