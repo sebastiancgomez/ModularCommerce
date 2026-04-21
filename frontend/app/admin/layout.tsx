@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import AdminNavbar from "@/components/admin/AdminNavBar"; // Ajusta la ruta si es distinta
+import AdminHeader from "@/components/admin/AdminHeader"; // Ajusta la ruta si es distinta
 
 
 type Props = {
@@ -11,18 +13,17 @@ type Props = {
 export default function AdminLayout({ children }: Props) {
   const router = useRouter();
   
-  // Iniciamos en 'null' o 'false' para indicar que estamos "verificando"
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
   const [checking, setChecking] = useState<boolean>(true);
 
   useEffect(() => {
-    // Función auxiliar para leer la cookie
     const checkToken = () => {
+      // Buscamos la cookie 'token'
       const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
       const token = match ? match[2] : null;
 
       if (!token) {
-        router.replace("/login"); // 'replace' es mejor que 'push' para auth
+        router.replace("/login");
       } else {
         setIsAuthorized(true);
       }
@@ -32,21 +33,26 @@ export default function AdminLayout({ children }: Props) {
     checkToken();
   }, [router]);
 
-  // Mientras revisamos, mostramos un estado de carga
+  // 1. Estado de carga inicial
   if (checking) {
     return (
-      <div className="flex-center" style={{ height: '100vh' }}>
-        <p>Verificando acceso...</p>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <p>Verificando credenciales...</p>
       </div>
     );
   }
 
-  // Si terminó de revisar y no está autorizado, no renderizamos nada (el router ya lo está mandando al login)
+  // 2. Si no está autorizado, no renderizamos nada (el useEffect ya está haciendo el redirect)
   if (!isAuthorized) return null;
 
+  // 3. Si está autorizado, mostramos toda la interfaz administrativa
   return (
-    <div className="theme-light">
-      {children}
-    </div>
+      <div>
+        <AdminHeader />
+        <AdminNavbar />
+        <main style={{ flex: 1, padding: '20px' }}>
+          {children}
+        </main>
+      </div>
   );
 }
