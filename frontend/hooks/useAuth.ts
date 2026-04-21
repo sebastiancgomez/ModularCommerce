@@ -2,13 +2,15 @@
 
 import { useSyncExternalStore } from "react";
 
-export function getToken() {
-  if (typeof window === "undefined") return null;
+export function getToken(): string | null {
+  if (typeof document === "undefined") return null;
 
-  return localStorage.getItem("token");
+  const match = document.cookie.match(/(^| )token=([^;]+)/);
+  return match ? match[2] : null;
 }
 
 export function isAuthenticated() {
+  console.log("isAuthenticated ejecutado. Token:", getToken(), !!getToken());
   return !!getToken();
 }
 
@@ -19,7 +21,7 @@ function subscribe(callback: () => void) {
 
 function getSnapshot() {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
+  return getToken();
 }
 
 function getServerSnapshot() {
@@ -40,5 +42,7 @@ export function useAuth() {
 
 export function logout() {
   localStorage.removeItem("token");
+  // elimina cookie
+  document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00";
   window.dispatchEvent(new Event("storage"));
 }

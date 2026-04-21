@@ -11,22 +11,22 @@ export default function AdminPage() {
 
       {/* ACCESOS */}
       <div className="grid-3">
-        <Link href="/admin/categories">
-          <div style={cardStyle}>
+        <Link href="/admin/categories" className="card-link">
+          <div className="card-button">
             <h3>Categorías</h3>
             <p>Gestiona las categorías principales</p>
           </div>
         </Link>
 
-        <Link href="/admin/subcategories">
-          <div style={cardStyle}>
+        <Link href="/admin/subcategories" className="card-link">
+          <div className="card-button">
             <h3>Subcategorías</h3>
             <p>Organiza productos por categoría</p>
           </div>
         </Link>
 
-        <Link href="/admin/products">
-          <div style={cardStyle}>
+        <Link href="/admin/products" className="card-link">
+          <div className="card-button">
             <h3>Productos</h3>
             <p>Administra el catálogo completo</p>
           </div>
@@ -38,22 +38,14 @@ export default function AdminPage() {
         <h2>Resumen</h2>
 
         <div className="flex-row">
-          <div style={statCard}>Productos: --</div>
-          <div style={statCard}>Categorías: --</div>
+          <div className="card-stat">Productos: --</div>
+          <div className="card-stat">Categorías: --</div>
           <div style={statCard}>Subcategorías: --</div>
         </div>
       </div>
     </div>
   );
 }
-
-const cardStyle = {
-  background: "#111",
-  border: "1px solid #333",
-  borderRadius: 10,
-  padding: 16,
-  cursor: "pointer"
-};
 
 const statCard = {
   background: "#1a1a1a",

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api";
+import LoginHeader from "@/components/login/LoginHeader";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -13,8 +14,7 @@ export default function LoginPage() {
   async function handleLogin() {
     try {
       const data = await login({ email, password });
-
-      localStorage.setItem("token", data.token);
+      document.cookie = `token=${data.token}; path=/;`;
 
       router.push("/admin");
     } catch {
@@ -23,7 +23,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="login">
+    <div>
+     <div>
+          <LoginHeader />
+     </div>
+     <div className="page">
+        <h1>Bienvenido a Mis Bellas</h1>
+     </div>
+     <div className="login">
         <h1>Login</h1>
         <div className="card">
         <input
@@ -46,6 +53,6 @@ export default function LoginPage() {
           Ingresar
         </button>
       </div>
-    
+      </div>
   );
 }

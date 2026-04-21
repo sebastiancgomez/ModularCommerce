@@ -22,7 +22,7 @@ export default function BuyerHeader() {
           {logged ? (
             <>
             <span>
-              <Link href="/admin">Admin</Link>
+              <Link href="/admin">Admin </Link>
             </span>
             |
               <button className="button-link"
@@ -30,8 +30,7 @@ export default function BuyerHeader() {
                   logout();
                   router.push("/");
                 }}
-              >Cerrar Sesión
-              </button>
+              >Cerrar Sesión</button>
             </>
           ) : (
             
