@@ -1,4 +1,4 @@
-import ProductAdmin from "@/components/admin/ProductAdmin";
+import ProductManager from "@/components/admin/ProductManager";
 
 export default async function ProductsPage() {
  
@@ -6,7 +6,7 @@ export default async function ProductsPage() {
   return (
     <div className="page">
       <h1>Productos</h1>
-      <ProductAdmin />;
+      <ProductManager />;
     </div>
   );
 }

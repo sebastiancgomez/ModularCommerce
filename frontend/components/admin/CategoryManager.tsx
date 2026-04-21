@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Añadimos useEffect
 import { createCategory, getCategories } from "@/lib/api";
 import type { Category } from "@/types/Category";
 
@@ -12,14 +12,20 @@ export default function CategoryManager({ initialCategories }: Props) {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [name, setName] = useState("");
 
+  // EFECTO PARA CARGAR DATOS FRESCOS AL ENTRAR
+  useEffect(() => {
+    async function load() {
+      const data = await getCategories();
+      setCategories(data);
+    }
+    load();
+  }, []); // Se ejecuta una vez al cargar la página
+
   async function handleCreate() {
     if (!name.trim()) return;
-
     await createCategory({ name });
-
     const updated = await getCategories();
     setCategories(updated);
-
     setName("");
   }
 
