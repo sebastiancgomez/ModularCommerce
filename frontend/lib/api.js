@@ -2,9 +2,7 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function getProducts() {
-  const res = await fetch(`${BASE_URL}/products`, {
-    cache: "no-store"
-  });
+  const res = await fetch(`${BASE_URL}/products`);
 
   if (!res.ok) throw new Error("Error fetching products");
   return res.json();
@@ -31,9 +29,7 @@ export async function updateProduct(id, payload) {
 }
 
 export async function getCategories() {
-  const res = await fetchWithAuth(`${BASE_URL}/categories`, {
-    cache: "no-store"
-  });
+  const res = await fetchWithAuth(`${BASE_URL}/categories`);
   if (!res.ok) throw new Error("Error fetching categories");
   return res.json();
 }
@@ -50,7 +46,6 @@ export async function createCategory(payload) {
 
 export async function getSubCategories() {
   const res = await fetchWithAuth(`${BASE_URL}/subcategories`, {
-    cache: "no-store",
     method: "GET"
   });
 
