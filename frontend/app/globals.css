@@ -414,7 +414,7 @@ a {
 
 .search-panel-footer {
   padding: 12px;
-  background: #fafafa;
+  background: var(--text-muted);
   text-align: left;
   font-size: 13px;
 }
