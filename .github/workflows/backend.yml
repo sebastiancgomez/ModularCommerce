@@ -9,13 +9,7 @@ on:
       - 'ModularCommerce.sln' # Cambios en la solución
       - 'docker-compose.yml' # Si tu deploy de backend depende de docker
       - '.github/workflows/backend.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'src/**'
-      - 'ModularCommerce.sln'  
-
+  
 permissions:
   id-token: write
   contents: read      
