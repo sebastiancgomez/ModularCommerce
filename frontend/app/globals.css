@@ -414,9 +414,10 @@ a {
 
 .search-panel-footer {
   padding: 12px;
-  background: var(--text-muted);
+  background: #fafafa;
   text-align: left;
   font-size: 13px;
+  color: var(--text-muted)
 }
 /*
 .search-panel-footer {
