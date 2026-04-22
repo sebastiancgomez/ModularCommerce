@@ -16,11 +16,11 @@ export default function AdminHeader() {
       <div className="logo">Mis Bellas</div>
       <div className="actions">
         <span>
-          <Link href="/">Home</Link>
+          <Link href="/" prefetch={false}>Home</Link>
         </span>
         |
         <span>
-       {isAuthenticated && <Link href="/admin">Admin</Link>}
+       {isAuthenticated && <Link href="/admin" prefetch={false}>Admin</Link>}
         </span>
         |
         <span>

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+// Importamos el Widget
+import { CldUploadWidget } from "next-cloudinary";
 import {
   getProducts,
   createProduct,
@@ -11,20 +13,20 @@ import {
 import { Product } from "@/types/Product";
 import { Category } from "@/types/Category";
 import Image from "next/image";
+import { ProductCreate } from "@/types/ProductCreate";
 
 export default function ProductManager() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Filtros de búsqueda en la galería
   const [filterCategoryId, setFilterCategoryId] = useState("");
   const [filterSubCategoryId, setFilterSubCategoryId] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<Partial<ProductCreate>>({
     sku: "",
     name: "",
     description: "",
@@ -86,7 +88,7 @@ export default function ProductManager() {
       alert("Faltan campos obligatorios");
       return;
     }
-
+    
     setLoading(true);
     try {
       if (editingId) {
@@ -98,7 +100,7 @@ export default function ProductManager() {
       }
       await loadData();
       resetForm();
-    } catch  {
+    } catch {
       alert("Error guardando producto");
     } finally {
       setLoading(false);
@@ -120,19 +122,16 @@ export default function ProductManager() {
     });
   }
 
-  // Subcategorías dinámicas para el formulario
   const formSubCategories = useMemo(() => {
     if (!form.categoryId) return [];
     return categories.find((c) => c.id === form.categoryId)?.subCategories || [];
   }, [form.categoryId, categories]);
 
-  // Subcategorías dinámicas para los filtros
   const filterSubCategories = useMemo(() => {
     if (!filterCategoryId) return [];
     return categories.find((c) => c.id === filterCategoryId)?.subCategories || [];
   }, [filterCategoryId, categories]);
 
-  // Galería de productos filtrada
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const matchesCategory = !filterCategoryId || p.categoryId === filterCategoryId;
@@ -153,7 +152,7 @@ export default function ProductManager() {
           <input className="input" placeholder="Nombre" value={form.name} onChange={(e) => update("name", e.target.value)} />
           <input className="input" placeholder="Descripción" value={form.description} onChange={(e) => update("description", e.target.value)} />
           <input className="input" placeholder="Marca" value={form.brand} onChange={(e) => update("brand", e.target.value)} />
-          
+
           <select
             className="select"
             value={form.categoryId}
@@ -181,7 +180,52 @@ export default function ProductManager() {
 
           <input className="input" placeholder="Precio" value={form.price} onChange={(e) => update("price", e.target.value)} />
           <input className="input" placeholder="Stock" value={form.stock} onChange={(e) => update("stock", e.target.value)} />
-          <input className="input" placeholder="Imagen URL" value={form.imageUrl} onChange={(e) => update("imageUrl", e.target.value)} />
+          
+          {/* Sección de Imagen URL y Subida */}
+          <div className="grid-2" style={{ gridColumn: "1 / -1" }}> 
+            <div className="flex-row-sm">
+              <input 
+                className="input" 
+                placeholder="Imagen URL" 
+                value={form.imageUrl} 
+                onChange={(e) => update("imageUrl", e.target.value)} 
+              />
+              
+              <CldUploadWidget 
+                // Extraemos el preset de las variables de entorno
+                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET} 
+                onSuccess={(result) => {
+                  if (typeof result.info !== "string" && result.info?.secure_url) {
+                    update("imageUrl", result.info.secure_url);
+                  }
+                }}
+                // Dejamos solo las opciones de comportamiento, ya no info sensible
+                options={{
+                  sources: ['local', 'url'],
+                  multiple: false,
+                  maxFiles: 1
+                }}
+              >
+                {({ open }) => (
+                  <button 
+                    type="button" 
+                    className="button btn-upload" 
+                    onClick={() => open()}
+                  >
+                    Subir Imagen
+                  </button>
+                )}
+              </CldUploadWidget>
+            </div>
+
+            {/* Vista previa con la nueva clase sugerida */}
+            {form.imageUrl && (
+              <div className="upload-preview">
+                <Image src={form.imageUrl} alt="Preview" />
+                <span>{form.imageUrl}</span>
+              </div>
+            )}
+          </div>
         </div>
 
         <button className="button button-full" onClick={handleSubmit} disabled={loading}>
@@ -189,6 +233,7 @@ export default function ProductManager() {
         </button>
       </div>
 
+      {/* El resto del código de la galería se mantiene igual... */}
       {message && <div className="success-message">{message}</div>}
 
       <div className="flex-row-sm">
@@ -241,5 +286,5 @@ export default function ProductManager() {
         ))}
       </div>
     </div>
-  );
+  )
 }

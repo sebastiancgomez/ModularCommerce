@@ -3,8 +3,8 @@ export interface ProductCreate {
   sku: string;
   name: string;
   description: string;
-  price: number;
-  stock: number;
+  price: string;
+  stock: string;
   categoryId: string;
   subCategoryId: string;
   brand?: string;

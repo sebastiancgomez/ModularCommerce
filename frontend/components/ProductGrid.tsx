@@ -1,19 +1,23 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react"; // 1. Añadimos useEffect y useState
+import { useRef, useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation"; // Para leer la búsqueda
 import { Product } from "../types/Product";
 import ProductCard from "./ProductCard";
-import { getProducts } from "@/lib/api"; // 2. Importa tu función de API
+import { getProducts } from "@/lib/api";
 
 type Props = {
-  products: Product[]; // Estos serán los productos iniciales (del build)
+  products: Product[];
 };
 
 export default function ProductGrid({ products: initialProducts }: Props) {
-  const [products, setProducts] = useState<Product[]>(initialProducts); // 3. Estado local
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const containerRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  
+  // Obtenemos el término de búsqueda de la URL
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
-  // 4. EFECTO PARA CARGAR PRODUCTOS EN EL NAVEGADOR
   useEffect(() => {
     async function load() {
       try {
@@ -22,11 +26,20 @@ export default function ProductGrid({ products: initialProducts }: Props) {
           setProducts(data);
         }
       } catch (error) {
-        console.error("Error cargando productos en el Home:", error);
+        console.error("Error cargando productos:", error);
       }
     }
     load();
   }, []);
+
+  // FILTRO DINÁMICO
+  const filteredProducts = useMemo(() => {
+    return products.filter(p => 
+      p.name.toLowerCase().includes(searchQuery) || 
+      p.brand?.toLowerCase().includes(searchQuery) ||
+      p.description?.toLowerCase().includes(searchQuery)
+    );
+  }, [products, searchQuery]);
 
   const scroll = (direction: "left" | "right") => {
     if (!containerRef.current) return;
@@ -37,26 +50,26 @@ export default function ProductGrid({ products: initialProducts }: Props) {
     });
   };
 
-  // 5. Si no hay productos, podemos mostrar un mensaje amigable o esqueletos
-  if (!products || products.length === 0) {
-    return <p className="text-center">Cargando productos destacados...</p>;
-  }
-
   return (
-    <div className="carousel-wrapper">
-      <button className="arrow left" onClick={() => scroll("left")}>
-        ◀
-      </button>
+    <div className="section">
+      {/* Título dinámico si hay búsqueda */}
+      {searchQuery && (
+        <h2 className="section-title">Resultados para: {searchQuery}</h2>
+      )}
 
-      <div className="carousel" ref={containerRef}>
-        {products.map(p => (
-          <ProductCard key={p.id} product={p} />
-        ))}
-      </div>
-
-      <button className="arrow right" onClick={() => scroll("right")}>
-        ▶
-      </button>
+      {filteredProducts.length === 0 ? (
+        <p className="text-center">No encontramos productos que coincidan.</p>
+      ) : (
+        <div className="carousel-wrapper">
+          <button className="arrow left" onClick={() => scroll("left")}>◀</button>
+          <div className="carousel" ref={containerRef}>
+            {filteredProducts.map(p => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+          <button className="arrow right" onClick={() => scroll("right")}>▶</button>
+        </div>
+      )}
     </div>
   );
 }

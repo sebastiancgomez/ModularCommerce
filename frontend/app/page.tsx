@@ -1,32 +1,38 @@
+import { Suspense } from "react"; // 1. Importamos Suspense
 import Header from "../components/BuyerHeader";
 import Navbar from "../components/Navbar";
 import ProductGrid from "../components/ProductGrid";
 import { getProducts } from "../lib/api";
 import { Product } from "../types/Product";
 
-
 export default async function Home() {
-  const products : Product[] = await getProducts();
+  const products: Product[] = await getProducts();
+  
   const grouped = products.reduce((acc, product) => {
-    if (!acc[product.categoryName]) {
-      acc[product.categoryName] = [];
+    const catName = product.categoryName || "Otros";
+    if (!acc[catName]) {
+      acc[catName] = [];
     }
-
-    acc[product.categoryName].push(product);
+    acc[catName].push(product);
     return acc;
   }, {} as Record<string, Product[]>);
 
   return (
     <>
-      <Header />
+      <Suspense fallback={<div style={{ height: '70px', background: '#1a1a1a' }} />}>
+        <Header />
+      </Suspense>
       <Navbar />
-
-      {Object.entries(grouped).map(([category, items]) => (
-        <div key={category} className="section">
-          <h2 className="section-title">{category}</h2>
-          <ProductGrid products={items} />
-        </div>
-      ))}
+      <main className="page">
+        {Object.entries(grouped).map(([category, items]) => (
+          <div key={category} className="section">
+            <h2 className="section-title">{category}</h2>
+            <Suspense fallback={<p className="text-center">Cargando {category}...</p>}>
+              <ProductGrid products={items} />
+            </Suspense>
+          </div>
+        ))}
+      </main>
     </>
   );
 }
