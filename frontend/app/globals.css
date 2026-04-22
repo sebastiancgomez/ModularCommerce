@@ -307,6 +307,131 @@ a {
 .search button:hover {
   background: var(--primary-hover);
 }
+/* Contenedor principal de la búsqueda para posicionar el panel */
+/* 1. El contenedor principal que reserva el espacio y sirve de ancla */
+.search-container {
+  position: relative;
+  width: 50%; /* Mantengo el 50% de tu estilo original */
+  max-width: 600px;
+  margin: 0 auto; /* Centrado si es necesario */
+}
+
+/* 2. El "cuadro" de la búsqueda que contiene el input y el botón */
+.search-input-wrapper {
+  display: flex;
+  align-items: stretch; /* Estira el botón para que ocupe todo el alto */
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden; /* Corta las esquinas del botón para que encajen con el radius */
+  height: 40px; /* Altura fija para control total */
+}
+
+/* 3. El campo de texto */
+.search-input-wrapper input {
+  flex: 1;
+  padding: 0 15px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
+
+/* 4. El botón de Buscar (ahora queda al final, fuera del flujo del texto) */
+.search-input-wrapper button {
+  padding: 0 20px;
+  border: none;
+  background: var(--primary); /* El rosado de tu imagen */
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-input-wrapper button:hover {
+  background: var(--primary-hover);
+}
+
+/* 5. El panel de resultados (Live Search) */
+.search-results-panel {
+  position: absolute;
+  top: calc(100% + 5px); /* 5px de separación del input */
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  z-index: 999;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+/* Estilos internos de los resultados (para que se vea como la imagen) */
+.result-item a {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  gap: 15px;
+  text-decoration: none;
+  border-bottom: 1px solid #f5f5f5;
+  transition: background 0.2s;
+}
+
+.result-item a:hover {
+  background: #fff5f8; /* Un toque rosado suave al pasar el mouse */
+}
+
+.result-image {
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+
+.result-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-name {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+  font-weight: 500;
+}
+
+.result-price {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: bold;
+  margin: 2px 0 0 0;
+}
+
+.search-panel-footer {
+  padding: 12px;
+  background: #fafafa;
+  text-align: left;
+  font-size: 13px;
+}
+/*
+.search-panel-footer {
+  padding: 10px 15px;
+  background-color: var(--surface);
+  font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+}
+
+.search-panel-footer a {
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  justify-content: space-between;
+}*/
 /*Carousel*/
 .carousel-wrapper {
   position: relative;
@@ -385,6 +510,35 @@ input:-webkit-autofill:active {
   caret-color:var(--text);
   border: 1px solid var(--border);
   transition: background-color 9999s ease-in-out 0s;
+}
+/* Nuevo estilo para la previsualización de subida */
+.upload-preview {
+  margin-top: 8px;
+  padding: 8px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload-preview img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.upload-preview span {
+  font-size: 12px;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+/* Para asegurar que el botón de subida no se estire raro */
+.btn-upload {
+  white-space: nowrap;
 }
 /*Responsive*/
 @media (max-width: 768px) {

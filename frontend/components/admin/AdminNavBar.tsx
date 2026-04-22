@@ -19,9 +19,9 @@ export default function AdminNavbar() {
 
         {open && (
           <div className="dropdown-menu">
-            <Link href="/admin/categories">Categorías</Link>
-            <Link href="/admin/subcategories">Subcategorías</Link>
-            <Link href="/admin/products">Productos</Link>
+            <Link href="/admin/categories" prefetch={false}>Categorías</Link>
+            <Link href="/admin/subcategories" prefetch={false}>Subcategorías</Link>
+            <Link href="/admin/products" prefetch={false}>Productos</Link>
           </div>
         )}
       </div>

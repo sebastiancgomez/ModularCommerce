@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "cloudinary.images-iherb.com",
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
     ],
   },
 };

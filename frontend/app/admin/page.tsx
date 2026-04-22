@@ -11,21 +11,21 @@ export default function AdminPage() {
 
       {/* ACCESOS */}
       <div className="grid-3">
-        <Link href="/admin/categories" className="card-link">
+        <Link href="/admin/categories" className="card-link" prefetch={false}>
           <div className="card-button">
             <h3>Categorías</h3>
             <p>Gestiona las categorías principales</p>
           </div>
         </Link>
 
-        <Link href="/admin/subcategories" className="card-link">
+        <Link href="/admin/subcategories" className="card-link" prefetch={false}>
           <div className="card-button">
             <h3>Subcategorías</h3>
             <p>Organiza productos por categoría</p>
           </div>
         </Link>
 
-        <Link href="/admin/products" className="card-link">
+        <Link href="/admin/products" className="card-link" prefetch={false}>
           <div className="card-button">
             <h3>Productos</h3>
             <p>Administra el catálogo completo</p>
