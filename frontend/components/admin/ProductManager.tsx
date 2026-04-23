@@ -221,7 +221,7 @@ export default function ProductManager() {
             {/* Vista previa con la nueva clase sugerida */}
             {form.imageUrl && (
               <div className="upload-preview">
-                <Image src={form.imageUrl} alt="Preview" />
+                <Image src={form.imageUrl} alt="Preview" width={20} height={20} />
                 <span>{form.imageUrl}</span>
               </div>
             )}

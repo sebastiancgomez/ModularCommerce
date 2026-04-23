@@ -4,10 +4,23 @@ import { CategoryCreate } from "../types/CategoryCreate";
 import { SubCategoryCreate } from "../types/SubCategoryCreate";
 import { LoginCredentials } from "../types/Login";
 import { logout } from "@/hooks/useAuth";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function getProducts() {
   const res = await fetch(`${BASE_URL}/products`);
+
+  if (!res.ok) throw new Error("Error fetching products");
+  return res.json();
+}
+
+export async function getProductById(id: string): Promise<Product> {
+  const res = await fetch(`${BASE_URL}/products/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
 
   if (!res.ok) throw new Error("Error fetching products");
   return res.json();
