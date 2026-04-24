@@ -34,6 +34,7 @@ a {
   border-radius: 6px;
   margin-bottom: 10px;
   text-align: center;
+  animation: slideIn 0.3s ease-out;
 }
 /*Helpers*/
 .page {
@@ -182,7 +183,24 @@ a {
 }
 
 .button-secondary {
-  background: var(--border);
+  background: transparent;
+  color: white;
+  border: 1px solid #ff0000; /* Borde rojo */
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button-secondary:hover:not(:disabled) {
+  background: rgba(255, 0, 0, 0.1);
+}
+
+.button-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #444;
 }
 
 .button-danger {
@@ -195,6 +213,42 @@ a {
   color: white;
   cursor: pointer;
   font: inherit;
+}
+
+.button-continue {
+  background: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff; /* Borde blanco sólido para que resalte */
+  padding: 16px 24px;
+  border-radius: var(--radius);
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-continue:hover {
+  background: #ffffff;
+  color: #000000; /* Invertimos colores al pasar el mouse */
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Si quieres que sea aún más llamativo (estilo neón rojo como tus otros botones) */
+.button-continue-alt {
+  border: 2px solid #ff0000;
+  color: #ff0000;
+}
+
+.button-continue-alt:hover {
+  background: #ff0000;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
 }
 /*Navbar & dropdown*/
 .navbar {
@@ -541,6 +595,93 @@ input:-webkit-autofill:active {
 .btn-upload {
   white-space: nowrap;
 }
+/* --- Shopping Cart Drawer --- */
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.cart-drawer {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 350px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cart-items-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding-right: 5px; /* Para que el scrollbar no tape el texto */
+}
+
+.cart-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+
+  background: var(--surface);
+  padding-top: 15px;
+  border-top: 2px solid var(--border);
+  padding-bottom: 40px; /* Espacio de seguridad al final */
+}
+
+/* --- Cart Badge (Icono Header) --- */
+.cart-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background: var(--primary);
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
 /*Responsive*/
 @media (max-width: 768px) {
   .grid-2 {
@@ -554,4 +695,207 @@ input:-webkit-autofill:active {
   .flex-row {
     flex-direction: column;
   }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-color: #eeeeee; /* Asegúrate de que tenga un color de fondo gris claro */
+  border-radius: 8px;
+}
+/* Esquina inferior izquierda
+.toast-container {
+  position: fixed;
+  
+  bottom: 30px; 
+  left: 30px;
+  
+  
+  z-index: 99999; 
+  
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none; 
+}
+
+.toast-item {
+  pointer-events: auto; 
+  background: #1a1a1a; 
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  border-left: 6px solid #ff0000; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  min-width: 280px;
+  
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  
+  animation: slideInLeft 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-110%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}*/
+
+/**esquina superior derecha*/
+.toast-container {
+  position: fixed;
+  /* Cambiamos bottom por top y left por right */
+  top: 30px; 
+  right: 30px;
+  
+  /* Mantenemos la jerarquía máxima */
+  z-index: 99999; 
+  
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast-item {
+  pointer-events: auto;
+  background: #1a1a1a;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  /* Cambiamos el borde al lado derecho para que combine con la esquina */
+  border-right: 6px solid #ff0000; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  min-width: 280px;
+  
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  /* Cambiamos la animación para que entre desde la derecha */
+  animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.stock-available {
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.stock-out {
+  font-size: 0.8rem;
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+button:disabled {
+  background-color: #333 !important;
+  color: #666 !important;
+  cursor: not-allowed;
+  border: 1px solid #444;
+}
+.btn-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.quantity-display {
+  min-width: 30px;
+  text-align: center;
+  font-weight: bold;
+}
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background: #1a1a1a; /* Fondo oscuro que resalte del card */
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 15px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.quantity-selector button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+}
+
+.quantity-selector button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ff0000; /* El color de acento de tu marca */
+}
+
+.quantity-selector button:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.quantity-display {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  min-width: 25px;
+  text-align: center;
+  user-select: none; /* Evita que el usuario seleccione el texto al dar clic rápido */
+}
+
+/* Opcional: Un pequeño efecto cuando el stock está al límite */
+.quantity-selector.at-limit {
+  border-color: #ff4d4d;
+}
+.container-small {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+input {
+  width: 95%;
+  padding: 12px;
+  background: #1a1a1a;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: white;
+  margin-bottom: 10px;
+}
+
+input:focus {
+  border-color: #ff0000;
+  outline: none;
 }

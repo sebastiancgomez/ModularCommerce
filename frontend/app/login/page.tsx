@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/lib/api";
-import LoginHeader from "@/components/login/LoginHeader";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,9 +23,6 @@ export default function LoginPage() {
 
   return (
     <div>
-     <div>
-          <LoginHeader />
-     </div>
      <div className="page">
         <h1>Bienvenido a Mis Bellas</h1>
      </div>

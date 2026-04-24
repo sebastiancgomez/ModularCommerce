@@ -1,9 +1,8 @@
 import { Suspense } from "react"; // 1. Importamos Suspense
-import Header from "../components/BuyerHeader";
-import Navbar from "../components/Navbar";
-import ProductGrid from "../components/ProductGrid";
-import { getProducts } from "../lib/api";
-import { Product } from "../types/Product";
+
+import ProductGrid from "@/components/buyer/ProductGrid";
+import { getProducts } from "@/lib/api";
+import { Product } from "@/types/Product";
 
 export default async function Home() {
   const products: Product[] = await getProducts();
@@ -19,10 +18,7 @@ export default async function Home() {
 
   return (
     <>
-      <Suspense fallback={<div style={{ height: '70px', background: '#1a1a1a' }} />}>
-        <Header />
-      </Suspense>
-      <Navbar />
+      
       <main className="page">
         {Object.entries(grouped).map(([category, items]) => (
           <div key={category} className="section">
