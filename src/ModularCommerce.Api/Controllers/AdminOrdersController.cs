@@ -44,11 +44,23 @@ public class AdminOrdersController : ControllerBase
         await _service.RejectOrder(id);
         return Ok();
     }
-
-    [HttpPost("{id}/review")]
-    public async Task<IActionResult> Review(Guid id)
+    [HttpPost("{id}/prepare")]
+    public async Task<IActionResult> Prepare(Guid id)
     {
-        await _service.MarkAsUnderReview(id);
+        await _service.PrepareOrder(id);
         return Ok();
     }
+    [HttpPost("{id}/deliver")]
+    public async Task<IActionResult> Dispatch(Guid id)
+    {
+        await _service.DispatchOrder(id);
+        return Ok();
+    }
+
+    /* [HttpPost("{id}/review")]
+     public async Task<IActionResult> Review(Guid id)
+     {
+         await _service.MarkAsUnderReview(id);
+         return Ok();
+     }*/
 }

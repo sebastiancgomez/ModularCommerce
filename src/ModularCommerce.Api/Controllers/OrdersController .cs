@@ -65,7 +65,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost("{id}/upload-receipt")]
-    public async Task<IActionResult> UploadReceipt(Guid id, IFormFile file)
+    public async Task<IActionResult> UploadReceipt(Guid id, [FromForm] IFormFile file)
     {
         var request = new UploadReceiptDto
         {

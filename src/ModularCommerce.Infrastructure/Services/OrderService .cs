@@ -25,6 +25,7 @@ public class OrderService : IOrderService
         using var transaction = await _context.Database.BeginTransactionAsync();
 
         var products = new List<(Product product, int quantity)>();
+        Console.WriteLine(dto);
 
         foreach (var item in dto.Items)
         {
@@ -237,7 +238,14 @@ public class OrderService : IOrderService
                 Email = o.Email,
                 TotalAmount = o.TotalAmount,
                 Status = o.Status.ToString(),
-                CreatedAt = o.CreatedAt
+                CreatedAt = o.CreatedAt,
+                // Aquí hacemos el "Join" implícito:
+                // Accedemos a la URL del comprobante. 
+                // Usamos ?. por si la orden aún no tiene recibo (estado Pending)
+                PaymentFileUrl = _context.PaymentReceipts
+                    .Where(pr => pr.OrderId == o.Id)
+                    .Select(pr => pr.FileUrl)
+                    .FirstOrDefault() ?? string.Empty
             })
             .ToListAsync();
     }
@@ -292,7 +300,7 @@ public class OrderService : IOrderService
 
         await _context.SaveChangesAsync();
     }
-    public async Task MarkAsUnderReview(Guid id)
+    /*public async Task MarkAsUnderReview(Guid id)
     {
         var order = await _context.Orders.FindAsync(id);
 
@@ -302,7 +310,7 @@ public class OrderService : IOrderService
         order.MarkAsUnderReview();
 
         await _context.SaveChangesAsync();
-    }
+    }*/
     public async Task CancelOrder(Guid orderId)
     {
         var order = await _context.Orders.FindAsync(orderId);
@@ -311,6 +319,28 @@ public class OrderService : IOrderService
             throw new BusinessException("Order not found");       
 
         order.Cancel();
+
+        await _context.SaveChangesAsync();
+    }
+    public async Task PrepareOrder(Guid orderId)
+    {
+        var order = await _context.Orders.FindAsync(orderId);
+
+        if (order == null)
+            throw new BusinessException("Order not found");
+
+        order.Prepare();
+
+        await _context.SaveChangesAsync();
+    }
+    public async Task DispatchOrder(Guid orderId)
+    {
+        var order = await _context.Orders.FindAsync(orderId);
+
+        if (order == null)
+            throw new BusinessException("Order not found");
+
+        order.Deliver();
 
         await _context.SaveChangesAsync();
     }
