@@ -1,7 +1,7 @@
 import { Suspense } from "react"; // 1. Importamos Suspense
 
 import ProductGrid from "@/components/buyer/ProductGrid";
-import { getProducts } from "@/lib/api";
+import { getProducts } from "@/lib/api/products";
 import { Product } from "@/types/Product";
 
 export default async function Home() {

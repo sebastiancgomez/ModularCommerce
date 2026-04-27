@@ -5,7 +5,7 @@ import { isAuthenticated, logout } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Product } from "@/types/Product";
-import { searchProducts } from "@/lib/api";
+import { searchProducts } from "@/lib/api/products";
 import { useCartStore } from "@/store/useCartStore"; // 1. Importamos el store
 
 export default function BuyerHeader() {

@@ -6,7 +6,7 @@ import { useNotificationStore } from '@/store/useNotificationStore';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Product } from '@/types/Product';
-import { getProductById } from '@/lib/api';
+import { getProductById } from '@/lib/api/products';
 import ProductSkeleton from '@/components/buyer/ProductSkeleton';
 
 export default function ProductDetailClient({ id }: { id: string }) {
