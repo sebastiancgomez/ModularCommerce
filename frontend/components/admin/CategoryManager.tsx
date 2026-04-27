@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react"; // Añadimos useEffect
-import { createCategory, getCategories } from "@/lib/api";
+import { createCategory, getCategories } from "@/lib/api/categories";
 import type { Category } from "@/types/Category";
 
 type Props = {

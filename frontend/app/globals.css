@@ -899,3 +899,164 @@ input:focus {
   border-color: #ff0000;
   outline: none;
 }
+
+.otp-input {
+  width: 45px;
+  height: 55px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: #1a1a1a;
+  color: white;
+  border: 2px solid #333;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.otp-input:focus {
+  border-color: #ff0000; /* Rojo neón como tus botones */
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+  transform: scale(1.05);
+}
+
+/* Responsivo para celulares pequeños */
+@media (max-width: 400px) {
+  .otp-input {
+    width: 35px;
+    height: 45px;
+    font-size: 1.2rem;
+  }
+}
+
+.input-file {
+  background: #1a1a1a;
+  padding: 15px;
+  border: 2px dashed #333;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #888;
+}
+
+.input-file:hover {
+  border-color: #da1b1b;
+}
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.status-badge.approved { background: #2e7d32; color: white; }
+.status-badge.paymentpending { background: #f57c00; color: white; }
+.status-badge.underreview { background: #0288d1; color: white; }
+.status-badge.rejected { background: #d32f2f; color: white; }
+
+.button-small {
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  background: #da1b1b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-small:disabled {
+  background: #444;
+  cursor: not-allowed;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85); /* Fondo oscuro transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 12px;
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  border: 1px solid #333;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.modal-close {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: #da1b1b;
+  color: white;
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.modal-close:hover {
+  transform: scale(1.1);
+}
+.nav-link-item, .dropdown-label {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link-item:hover, .dropdown-label:hover {
+  color: #da1b1b; /* El rojo de Mis Bellas */
+}
+
+/* El contenedor principal de la navbar debe asegurar que todo empiece a la izquierda */
+.navbar {
+  display: flex;
+  justify-content: flex-start; /* Esto los obliga a estar juntos al inicio */
+  padding: 0 20px;
+  height: 50px;
+  background: #111;
+  border-bottom: 1px solid #333;
+}
+/* Estilo base para los links del submenú */
+.dropdown-menu a {
+  display: block;
+  padding: 10px 15px;
+  color: #fff; /* Color blanco por defecto */
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* El efecto "Mis Bellas" al pasar el mouse */
+.dropdown-menu a:hover {
+  color: #da1b1b !important; /* Rojo característico */
+  background: rgba(218, 27, 27, 0.05); /* Opcional: un fondo rojo muy sutil */
+  padding-left: 20px; /* Opcional: un pequeño desplacamiento para que se sienta interactivo */
+}
+.dropdown-item {
+  color: white;
+  transition: color 0.2s;
+}
+
+.dropdown-item:hover {
+  color: #da1b1b;
+}
