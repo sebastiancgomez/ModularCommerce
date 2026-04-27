@@ -41,6 +41,7 @@
         public string Email { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
+        public string PaymentFileUrl { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
     }
     public class OrderAdminDetailDto

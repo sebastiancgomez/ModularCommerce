@@ -17,7 +17,9 @@ public interface IOrderService
     Task<OrderAdminDetailDto?> GetAdminOrderById(Guid id);
     Task ApproveOrder(Guid id);
     Task RejectOrder(Guid id);
-    Task MarkAsUnderReview(Guid id);
+    //Task MarkAsUnderReview(Guid id);
     Task CancelOrder(Guid orderId);
+    Task PrepareOrder(Guid id);
+    Task DispatchOrder(Guid id);
     Task MarkAsDelivered(Guid orderId);
 }
