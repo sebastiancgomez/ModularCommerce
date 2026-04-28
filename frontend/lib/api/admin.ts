@@ -1,13 +1,18 @@
 // lib/api/admin.ts
 import { fetchWithAuth } from './auth';
+import {OrderItemRequest} from "@/types/Order";
 
 export interface AdminOrder {
   id: string;
-  customerEmail: string;
+  email: string;
+  fullName: string;
+  phone: string;
+  address: string
   totalAmount: number;
   status: string;
   createdAt: string;
   paymentFileUrl?: string; // La URL de Cloudinary
+  items: OrderItemRequest[];
 }
 
 export const adminService = {
@@ -27,5 +32,22 @@ export const adminService = {
 
   rejectOrder: async (id: string) => {
     await fetchWithAuth(`/admin/orders/${id}/reject`, { method: 'POST' });
-  }
+  },
+
+  prepareOrder: async (id: string) => {
+    await fetchWithAuth(`/admin/orders/${id}/prepare`, { method: 'POST' });
+  },
+
+  dispatchOrder: async (id: string) => {
+    await fetchWithAuth(`/admin/orders/${id}/deliver`, { method: 'POST' });
+  },
+
+  markAsDelivered: async (id: string) => {
+    await fetchWithAuth(`/admin/orders/${id}/delivered`, { method: 'POST' });
+  },
+  // Agregamos el método de rechazo
+  rejectOrder: async (id: string) => {
+    await fetchWithAuth(`/admin/orders/${id}/reject`, { method: 'POST' });
+  },
+
 };

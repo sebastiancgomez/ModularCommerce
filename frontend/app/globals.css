@@ -80,6 +80,12 @@ a {
   gap: var(--spacing);
 }
 
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing);
+}
+
 .flex-row {
   display: flex;
   gap: var(--spacing);
@@ -129,6 +135,18 @@ a {
   border: 1px solid var(--border);
 }
 
+.card-label {
+  font-size: 0.85rem;
+  color: #888;
+  transform: uppercase;
+  gap: 0.5px
+}
+
+.card-value {
+  font-size: 1.4rem;
+  margin: 0;
+  font-weight: "bold"
+}
 
 /* 🔥 Hover = clave */
 .card-button:hover {
@@ -140,6 +158,12 @@ a {
 /* Feedback al click */
 .card-link:active {
   transform: scale(0.98);
+}
+
+.stats-grid{
+  margin-top: 24;
+  display: grid;
+  gap: 12px
 }
 
 /*Inputs*/
@@ -707,7 +731,7 @@ input:-webkit-autofill:active {
   background-color: #eeeeee; /* Asegúrate de que tenga un color de fondo gris claro */
   border-radius: 8px;
 }
-/* Esquina inferior izquierda
+/* Esquina inferior izquierda*/
 .toast-container {
   position: fixed;
   
@@ -725,8 +749,8 @@ input:-webkit-autofill:active {
 
 .toast-item {
   pointer-events: auto; 
-  background: #1a1a1a; 
-  color: white;
+  background: white; 
+  color: #1a1a1a;
   padding: 16px 24px;
   border-radius: 12px;
   border-left: 6px solid #ff0000; 
@@ -750,16 +774,16 @@ input:-webkit-autofill:active {
     transform: translateX(0);
     opacity: 1;
   }
-}*/
+}
 
 /**esquina superior derecha*/
-.toast-container {
+/*.toast-container {
   position: fixed;
-  /* Cambiamos bottom por top y left por right */
+  
   top: 30px; 
   right: 30px;
   
-  /* Mantenemos la jerarquía máxima */
+  
   z-index: 99999; 
   
   display: flex;
@@ -774,7 +798,7 @@ input:-webkit-autofill:active {
   color: white;
   padding: 16px 24px;
   border-radius: 12px;
-  /* Cambiamos el borde al lado derecho para que combine con la esquina */
+  
   border-right: 6px solid #ff0000; 
   box-shadow: 0 10px 30px rgba(0,0,0,0.8);
   min-width: 280px;
@@ -783,7 +807,7 @@ input:-webkit-autofill:active {
   align-items: center;
   gap: 12px;
   
-  /* Cambiamos la animación para que entre desde la derecha */
+  
   animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -796,7 +820,7 @@ input:-webkit-autofill:active {
     transform: translateX(0);
     opacity: 1;
   }
-}
+}*/
 .stock-available {
   font-size: 0.8rem;
   color: #888;
@@ -1060,3 +1084,26 @@ input:focus {
 .dropdown-item:hover {
   color: #da1b1b;
 }
+.filter-btn {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: #ccc;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn.active {
+  background: #333;
+  color: white;
+  border-color: #da1b1b;
+}
+
+.filter-btn:hover {
+  background: #222;
+}
+/* Ejemplo rápido en tu CSS para esos estados */
+.badge-delivered { color: #00796b; font-weight: bold; }
+.badge-cancelled { color: #da1b1b; font-weight: bold; }
+.badge-paymentpending { color: #f57c00; font-weight: bold; }
