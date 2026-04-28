@@ -9,6 +9,7 @@ public interface IOrderService
     Task<Guid> Create(CreateOrderDto dto);
     Task<OrderResponseDto?> GetById(Guid id);
     Task<List<OrderResponseDto>> GetAll();
+    Task<List<OrderResponseDto>> GetByEmail(string email);
     Task UpdateStatus(Guid id, OrderStatus status);
     Task<(bool Success, string Message)> VerifyOtp(VerifyOtpDto dto);
     Task<string> ResendOtp(Guid orderId);

@@ -29,9 +29,18 @@ public class Product
 
     public void DecreaseStock(int quantity)
     {
+        if (quantity < 0)
+            throw new BusinessException($"Quantity can not be less than 0");
+
         if (Stock < quantity)
             throw new BusinessException($"Insufficient stock for {Name}");
 
         Stock -= quantity;
+    }
+    public void ReleaseStock(int quantity)
+    {
+        if (quantity < 0)
+            throw new BusinessException($"Quantity can not be less than 0");
+        Stock += quantity;
     }
 }
