@@ -39,5 +39,15 @@ export const orderService = {
       const error = await response.json().catch(() => ({ message: 'Error al subir comprobante' }));
       throw new Error(error.message || 'Error en el servidor');
     }
+  },
+  getByEmail: async (email: string) => {
+      const response = await apiFetch(`/orders/getByEmail?email=${encodeURIComponent(email)}`);
+      return response.json();
+  },
+  // Cancelar pedido (Buyer)
+  cancelOrder: async (id: string) => {
+    await apiFetch(`/orders/${id}/cancel`, { method: 'POST' });
   }
+  
 };
+ 
