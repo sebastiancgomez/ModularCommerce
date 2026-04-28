@@ -77,6 +77,21 @@ function VerifyOTPContent() {
       setLoading(false);
     }
   };
+  const handleCancelCheckout = async () => {
+    if (!confirm("¿Deseas cancelar el proceso de compra? Los productos volverán al inventario.")) return;
+    
+    try {
+      // Usamos el ID de la orden que tienes en el estado/URL
+      await orderService.cancelOrder(orderId);
+      addNotification("Compra cancelada", "info");
+      router.push('/'); // Volver al inicio
+    } catch(err: unknown) {
+      let msg = "Código inválido o expirado.";
+      if (err instanceof Error) msg = err.message;
+      addNotification(msg, "error");
+      //addNotification("Error al cancelar", "error");
+    }
+  };
 
   return (
     <div className="page container-small text-center">
@@ -103,7 +118,19 @@ function VerifyOTPContent() {
         <button type="submit" className="button button-full" disabled={loading || otp.includes("")}>
           {loading ? 'Verificando...' : 'Confirmar Código'}
         </button>
+        <button 
+          onClick={handleCancelCheckout} 
+          className="button-secondary button-full"          
+        >
+          Cancelar y volver a la tienda
+        </button>
+        
       </form>
+      <div className="flex-column" style={{ gap: '10px', marginTop: '20px' }}>
+        
+        
+        
+      </div>
     </div>
   );
 }

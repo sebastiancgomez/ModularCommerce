@@ -33,6 +33,18 @@ function PaymentContent() {
       setUploading(false);
     }
   };
+  const handleCancelCheckout = async () => {
+    if (!confirm("¿Deseas cancelar el proceso de compra? Los productos volverán al inventario.")) return;
+    
+    try {
+      // Usamos el ID de la orden que tienes en el estado/URL
+      await orderService.cancelOrder(orderId);
+      addNotification("Compra cancelada", "info");
+      router.push('/'); // Volver al inicio
+    } catch {
+      addNotification("Error al cancelar", "error");
+    }
+  };
 
  return (
     <div className="page container-small">
@@ -64,7 +76,13 @@ function PaymentContent() {
           >
             {uploading ? 'Subiendo...' : 'Enviar Comprobante'}
           </button>
-        </div>
+          <button 
+            className="button-secondary button-full"
+            onClick={handleCancelCheckout} 
+          >
+            Cancelar y volver a la tienda
+          </button>
+        </div>       
       </div>
     </div>
   );
