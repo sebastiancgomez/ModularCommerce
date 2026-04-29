@@ -2,6 +2,6 @@
 {
     public interface IEmailService
     {
-        Task SendOtp(string toEmail, string code);
+        Task SendOtp(string toEmail, string code, string purpose);
     }
 }
