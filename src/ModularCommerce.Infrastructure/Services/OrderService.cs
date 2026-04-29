@@ -4,6 +4,7 @@ using ModularCommerce.Application.Services;
 using ModularCommerce.Domain.Entities;
 using ModularCommerce.Domain.Exceptions;
 using ModularCommerce.Infrastructure.Persistence;
+using System.Security.Claims;
 
 namespace ModularCommerce.Infrastructure.Services;
 
@@ -12,12 +13,14 @@ public class OrderService : IOrderService
     private readonly AppDbContext _context;
     private readonly IEmailService _emailService;
     private readonly IFileStorageService _fileStorageService;
+    private readonly ITokenService _tokenService;
 
-    public OrderService(AppDbContext context, IEmailService emailService, IFileStorageService fileStorageService)
+    public OrderService(AppDbContext context, IEmailService emailService, IFileStorageService fileStorageService, ITokenService tokenService)
     {
         _context = context;
         _emailService = emailService;
         _fileStorageService = fileStorageService;
+        _tokenService = tokenService;
     }
 
     public async Task<Guid> Create(CreateOrderDto dto)
@@ -54,21 +57,21 @@ public class OrderService : IOrderService
         // OTP sigue siendo aplicación/infraestructura
         var otpCode = GenerateOtp();
 
-        var otp = new OrderOtp
+        var otp = new UserOtp
         {
-            OrderId = order.Id,
+            Email = order.Email,
             Code = otpCode,
             Expiration = DateTime.UtcNow.AddMinutes(10)
         };
 
-        _context.OrderOtps.Add(otp);
+        _context.UserOtps.Add(otp);
         await _context.SaveChangesAsync();
 
         _ = Task.Run(async () =>
         {
             try
             {
-                await _emailService.SendOtp(order.Email, otpCode);
+                await _emailService.SendOtp(order.Email, otp.Code, otp.Purpose);
             }
             catch { }
         });
@@ -84,6 +87,9 @@ public class OrderService : IOrderService
             {
                 Id = o.Id,
                 Email = o.Email,
+                FullName = o.FullName,
+                Phone = o.Phone,
+                Address = o.Address,
                 TotalAmount = o.TotalAmount,
                 Status = o.Status.ToString(),
                 CreatedAt = o.CreatedAt,
@@ -151,48 +157,81 @@ public class OrderService : IOrderService
 
         await _context.SaveChangesAsync();
     }
-    public async Task<(bool Success, string Message)> VerifyOtp(VerifyOtpDto dto)
+    public async Task<(bool Success, string Message, string Token)> VerifyOtp(VerifyOtpDto dto)
     {
-        var otp = await _context.OrderOtps
-            .Where(o => o.OrderId == dto.OrderId)
-            .OrderByDescending(o => o.CreatedAt)
-            .FirstOrDefaultAsync();
+        // Usamos una estrategia de ejecución por si hay reintentos de conexión
+        var strategy = _context.Database.CreateExecutionStrategy();
 
-        if (otp == null)
-            throw new BusinessException("Código no encontrado");
-
-        var order = await _context.Orders.FindAsync(dto.OrderId);
-
-        if (order == null)
-            throw new BusinessException("Orden no encontrada");
-
-        try
+        return await strategy.ExecuteAsync(async () =>
         {
-            otp.Verify(dto.Code);
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var otp = await _context.UserOtps
+                    .Where(o => o.Email == dto.Email && !o.IsUsed)
+                    .OrderByDescending(o => o.CreatedAt)
+                    .FirstOrDefaultAsync();
 
-            order.VerifyOtp();
+                if (otp == null)
+                    throw new BusinessException("Código no encontrado o ya utilizado");
 
-            await _context.SaveChangesAsync();
+                // 1. Verificamos el OTP (esto incrementa intentos internamente)
+                try
+                {
+                    otp.Verify(dto.Code);
+                }
+                catch (BusinessException ex)
+                {
+                    // Si el código es incorrecto, guardamos el INTENTO fallido
+                    // fuera de esta transacción o confirmando esta pero fallando el proceso.
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return (false, ex.Message, string.Empty);
+                }
 
-            return (true, "Orden confirmada");
-        }
-        catch (BusinessException ex)
-        {
-            await _context.SaveChangesAsync(); // guarda intentos
+                // 2. Si el propósito es Confirmación de Orden, actualizamos la orden
+                if (otp.Purpose == "OrderConfirmation")
+                {
+                    var order = await _context.Orders
+                        .OrderByDescending(o => o.CreatedAt)
+                        .FirstOrDefaultAsync(o => o.Email == dto.Email && o.Status == OrderStatus.Pending);
 
-            return (false, ex.Message);
-        }
+                    if (order == null)
+                        throw new BusinessException("No se encontró una orden pendiente para confirmar");
+
+                    order.VerifyOtp(); // Cambia estado a Paid
+                }
+
+                // 3. Guardamos ambos cambios de forma atómica
+                await _context.SaveChangesAsync();
+
+                // 4. Confirmamos la transacción
+                await transaction.CommitAsync();
+
+                var token = _tokenService.CreateOrderAccessToken(dto.Email);
+
+                return (true, "Verificación exitosa", token);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                // Si es una BusinessException la pasamos, si no, es un error genérico
+                return (false, ex is BusinessException ? ex.Message : "Error interno al procesar la verificación", string.Empty);
+            }
+        });
     }
-    public async Task<string> ResendOtp(Guid orderId)
+    public async Task<string> ResendOtp(string email)
     {
-        var order = await _context.Orders.FindAsync(orderId);
+        var order = await _context.Orders
+            .OrderByDescending(o => o.CreatedAt)
+            .FirstOrDefaultAsync(o => o.Email == email);
 
         if (order == null)
             throw new BusinessException("Orden no encontrada");
 
         // 👇 AQUÍ VA LA VALIDACIÓN ANTI ABUSO
-        var lastOtp = await _context.OrderOtps
-            .Where(o => o.OrderId == orderId)
+        var lastOtp = await _context.UserOtps
+            .Where(o => o.Email == email)
             .OrderByDescending(o => o.CreatedAt)
             .FirstOrDefaultAsync();
 
@@ -202,19 +241,19 @@ public class OrderService : IOrderService
         // Generar nuevo OTP
         var newCode = GenerateOtp();
 
-        var otp = new OrderOtp
+        var otp = new UserOtp
         {
-            OrderId = orderId,
+            Email = email,
             Code = newCode,
             Expiration = DateTime.UtcNow.AddMinutes(10)
         };
 
-        _context.OrderOtps.Add(otp);
+        _context.UserOtps.Add(otp);
         await _context.SaveChangesAsync();
 
         try
         {
-            await _emailService.SendOtp(order.Email, newCode);
+            await _emailService.SendOtp(order.Email, otp.Code, otp.Purpose);
         }
         catch (Exception ex)
         {
@@ -421,6 +460,50 @@ public class OrderService : IOrderService
 
         await _context.SaveChangesAsync();
     }
+    public async Task RequestLookupOtp(string email)
+    {
+        // 1. Normalizar email
+        var normalizedEmail = email.Trim().ToLower();
+
+        // 2. Opcional: Validar que existan órdenes para no gastar recursos de email
+        var hasOrders = await _context.Orders.AnyAsync(o => o.Email == normalizedEmail);
+        if (!hasOrders)
+            throw new BusinessException("No se encontraron órdenes asociadas a este correo.");
+
+        // 3. Invalidar OTPs previos de tipo Lookup
+        var oldOtps = await _context.UserOtps
+            .Where(o => o.Email == normalizedEmail && o.Purpose == "OrderLookup" && !o.IsUsed)
+            .ToListAsync();
+
+        foreach (var old in oldOtps) old.IsUsed = true;
+
+        // 4. Crear nuevo OTP
+        var otp = new UserOtp
+        {
+            Email = normalizedEmail,
+            Code = new Random().Next(100000, 999999).ToString(),
+            Expiration = DateTime.UtcNow.AddMinutes(15),
+            Purpose = OtpPurpose.OrderLookup.ToString(), // <--- Crucial para la lógica del VerifyOtp
+        };
+
+        _context.UserOtps.Add(otp);
+        await _context.SaveChangesAsync();
+
+        // 5. Enviar el email
+        await _emailService.SendOtp(normalizedEmail, otp.Code, otp.Purpose);
+    }
+    public async Task RecoveryUpdate(Guid id, UpdateOrderRecoveryDto dto)
+    {
+        var order = await _context.Orders.FindAsync(id);
+        if (order == null)
+            throw new BusinessException("Order not found");
+        // Actualizamos solo lo permitido
+        order.Address = dto.Address;
+        order.Phone = dto.Phone;
+
+        await _context.SaveChangesAsync();
+    }
+
     private string GenerateOtp()
     {
         var random = new Random();
