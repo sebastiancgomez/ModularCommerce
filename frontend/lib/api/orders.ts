@@ -1,5 +1,6 @@
 import { apiFetch } from './client';
 import { OrderRequest } from '@/types/Order';
+import { apiFetchWithAuthBuyer } from './auth';
 
 export const orderService = {
   /**
@@ -18,11 +19,12 @@ export const orderService = {
   /**
    * Verifica el código enviado al teléfono del cliente
    */
-  verifyOtp: async (orderId: string, code: string): Promise<void> => {
-    await apiFetch('/orders/verify-otp', {
+  verifyOtp: async (email: string, code: string, purpose: string) => {
+     const response =  await apiFetch(`/orders/verify-otp`, {
       method: 'POST',
-      body: JSON.stringify({ orderId, code }),
+      body: JSON.stringify({ email, code, purpose })
     });
+    return response.json();
   },
 
   uploadReceipt: async (orderId: string, file: File): Promise<void> => {
@@ -41,13 +43,36 @@ export const orderService = {
     }
   },
   getByEmail: async (email: string) => {
-      const response = await apiFetch(`/orders/getByEmail?email=${encodeURIComponent(email)}`);
-      return response.json();
+    const response = await apiFetchWithAuthBuyer(`/orders/getByEmail?email=${encodeURIComponent(email)}`);
+    return response.json();
   },
   // Cancelar pedido (Buyer)
   cancelOrder: async (id: string) => {
     await apiFetch(`/orders/${id}/cancel`, { method: 'POST' });
-  }
+  },
+  requestLookupOtp: async (email: string) => {
+    // Usamos query string como definimos en el controller
+    const response =await apiFetch(`/orders/request-lookup?email=${encodeURIComponent(email)}`, {
+      method: 'POST'
+    });
+    return response.json();
+  },
+  getById: async (id: string) => {
+    const response = await apiFetch(`/orders/${id}`);
+    return response.json();
+  },
+
+  /**
+   * Actualiza parcialmente la dirección y el teléfono.
+   * Usado justo antes de saltar a la pasarela de pago.
+   */
+  updateRecoveryData: async (id: string, data: { address: string; phone: string }) => {
+    const response = await apiFetchWithAuthBuyer(`/orders/${id}/recovery-update`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
   
 };
  

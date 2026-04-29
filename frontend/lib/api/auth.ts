@@ -17,32 +17,47 @@ export async function login(payload: Partial<LoginCredentials>) {
 }
 
 
-function getAuthHeaders(): Record<string, string> {
+export function getAuthHeaders(): Record<string, string> {
   if (typeof window === "undefined") return {};
 
-  const token = document.cookie
+  // 1. Intentar obtener token de Admin (Cookie)
+  let token = document.cookie
     .split("; ")
     .find(row => row.startsWith("token="))
     ?.split("=")[1];
 
+  // 2. Si no hay de Admin, buscar el de Buyer (sessionStorage)
+  if (!token) {
+    token = sessionStorage.getItem('buyer_token') || undefined;
+  }
+  console.log(token);
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+export async function apiFetchWithAuthBuyer(endpoint: string , options: RequestInit = {}): Promise<Response> {
+  const response =  await fetchWithAuthHeaders(endpoint, options);
+
+  if (response.status === 401 || response.status === 403) {
+    // Si el servidor rechaza el token:
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem('buyer_token');
+      sessionStorage.removeItem('buyer_email');
+      
+      // Redirigir al lookup con un mensaje
+      window.location.href = '/orders/lookup?error=session_expired';
+    }
+  }
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Error en la petición');
+  }
+
+  return response;
+}
 export async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
-  // 1. Preparamos los headers combinando Content-Type, Auth y los que vengan por params
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    ...getAuthHeaders(), 
-    ...(options.headers as Record<string, string> || {}),
-  };
+  const res = await fetchWithAuthHeaders(url, options);
 
-  // 2. Ejecutamos la petición
-  const res = await apiFetch(url, {
-    ...options,
-    headers,
-  });
-
-  // 3. Manejo de sesión expirada (401)
   if (res.status === 401) {
     if (typeof window !== "undefined") {
       // Usamos tu función logout que ya sabe cómo limpiar la cookie de token
@@ -59,5 +74,20 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}): Pro
     throw new Error(errorData.message || "Error en la petición");
   }
 
+  return res;
+}
+async function fetchWithAuthHeaders(url: string, options: RequestInit = {}): Promise<Response> {
+  // 1. Preparamos los headers combinando Content-Type, Auth y los que vengan por params
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+    ...getAuthHeaders(), 
+    ...(options.headers as Record<string, string> || {}),
+  };
+
+  // 2. Ejecutamos la petición
+  const res = await apiFetch(url, {
+    ...options,
+    headers,
+  });
   return res;
 }

@@ -45,9 +45,6 @@ export const adminService = {
   markAsDelivered: async (id: string) => {
     await fetchWithAuth(`/admin/orders/${id}/delivered`, { method: 'POST' });
   },
-  // Agregamos el método de rechazo
-  rejectOrder: async (id: string) => {
-    await fetchWithAuth(`/admin/orders/${id}/reject`, { method: 'POST' });
-  },
+ 
 
 };
