@@ -38,8 +38,8 @@ function PaymentContent() {
     
     try {
       // Usamos el ID de la orden que tienes en el estado/URL
-      await orderService.cancelOrder(orderId);
-      addNotification("Compra cancelada", "info");
+      await orderService.cancelOrder(orderId!);
+      addNotification("Compra cancelada", "success");
       router.push('/'); // Volver al inicio
     } catch {
       addNotification("Error al cancelar", "error");
@@ -77,10 +77,10 @@ function PaymentContent() {
             {uploading ? 'Subiendo...' : 'Enviar Comprobante'}
           </button>
           <button 
-            className="button-secondary button-full"
+            className="otp-secondary-button button-full"
             onClick={handleCancelCheckout} 
           >
-            Cancelar y volver a la tienda
+             ← Cancelar y volver a la tienda
           </button>
         </div>       
       </div>

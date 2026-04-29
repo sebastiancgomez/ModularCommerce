@@ -62,7 +62,7 @@ function VerifyOTPContent() {
 
     setLoading(true);
     try {
-      await orderService.verifyOtp(orderId!, code);
+      await orderService.verifyOtp(orderId!, code, "OrderConfirmation");
       
       addNotification("¡Código verificado con éxito!", "success");
       clearCart(); // AHORA SÍ limpiamos el carrito
@@ -82,8 +82,8 @@ function VerifyOTPContent() {
     
     try {
       // Usamos el ID de la orden que tienes en el estado/URL
-      await orderService.cancelOrder(orderId);
-      addNotification("Compra cancelada", "info");
+      await orderService.cancelOrder(orderId!);
+      addNotification("Compra cancelada", "success");
       router.push('/'); // Volver al inicio
     } catch(err: unknown) {
       let msg = "Código inválido o expirado.";
@@ -99,7 +99,7 @@ function VerifyOTPContent() {
       <p>Hemos enviado un código de 6 dígitos a tu correo.</p>
       
       <form onSubmit={handleVerify} className="flex-col" style={{ gap: '30px', marginTop: '20px' }}>
-        <div className="flex-row justify-center" style={{ gap: '10px' }}>
+        <div className='otp-div justify-center'>
           {otp.map((data, index) => (
             <input
               key={index}
@@ -115,22 +115,17 @@ function VerifyOTPContent() {
           ))}
         </div>
 
-        <button type="submit" className="button button-full" disabled={loading || otp.includes("")}>
+        <button type="submit" className="button otp-button" disabled={loading || otp.includes("")}>
           {loading ? 'Verificando...' : 'Confirmar Código'}
         </button>
         <button 
           onClick={handleCancelCheckout} 
-          className="button-secondary button-full"          
+          style={{background: 'none', border: 'none', marginTop: '15px', color: '#888', cursor: 'pointer' , width: '100%', maxWidth: '470px' }}          
         >
-          Cancelar y volver a la tienda
+          ← Cancelar y volver a la tienda
         </button>
         
       </form>
-      <div className="flex-column" style={{ gap: '10px', marginTop: '20px' }}>
-        
-        
-        
-      </div>
     </div>
   );
 }
