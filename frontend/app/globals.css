@@ -944,11 +944,32 @@ input:focus {
   transform: scale(1.05);
 }
 
+.otp-div{
+   display: flex; 
+   flex-direction: row; 
+   gap: 8px;
+   width: 100%;
+   max-width: 400px
+}
+.otp-button{
+   width: 100%;
+   max-width: 470px
+}
+.otp-secondary-button{
+   background: none;
+   border: none;
+   margin-top: 15px;
+   color: #888;
+   cursor: pointer;
+   width: 100%;
+   max-width: 470px
+}
+
 /* Responsivo para celulares pequeños */
-@media (max-width: 400px) {
+@media (max-width: 350px) {
   .otp-input {
-    width: 35px;
-    height: 45px;
+    width: 12vw; /* Se adapta al ancho de la pantalla */
+    height: 15vw;
     font-size: 1.2rem;
   }
 }
@@ -960,6 +981,22 @@ input:focus {
   border-radius: 8px;
   cursor: pointer;
   color: #888;
+}
+.input-file::file-selector-button{
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
+}
+.input-file::file-selector-button:hover {
+  background: #b01032; /* Un tono un poco más oscuro que tu primary */
+}
+
+/* Opcional: Estilo cuando el input está enfocado */
+.input-file:focus {
+  outline: none;
 }
 
 .input-file:hover {

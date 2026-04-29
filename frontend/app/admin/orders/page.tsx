@@ -43,10 +43,11 @@ function ImageModal({ url, onClose }: { url: string; onClose: () => void }) {
 
 
 export default function AdminOrdersPage() {
+  type OrderStatusFilter = 'All' | 'Pending' | 'Paid' | 'UnderReview' | 'Preparing' | 'Delivered' | 'Cancelled' | 'Rejected' | 'Delivering';
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [orderToPrepare, setOrderToPrepare] = useState<AdminOrder | null>(null);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null); // Estado para el modal
-  const [filter, setFilter] = useState<'All' | 'UnderReview' | 'Approved' | 'Preparing' | 'Delivering' | 'Delivered'>('All');
+  const [filter, setFilter] = useState<OrderStatusFilter>('All');
   const [loading, setLoading] = useState(true);
   const addNotification = useNotificationStore(s => s.addNotification);
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,6 +58,8 @@ export default function AdminOrdersPage() {
   { label: 'Por Enviar', value: 'Preparing', color: '#2e7d32' },
   { label: 'En Camino', value: 'Delivering', color: '#00796b' },
   { label: 'Entregadas', value: 'Delivered', color: '#1b5e20' },
+  { label: 'Rechazadas', value: 'Rejected', color: '#c9560a' },
+  { label: 'Canceladas', value: 'Cancelled', color: '#ee5108' },
 ];
 
   const fetchOrders = useCallback(async () => {
@@ -107,18 +110,18 @@ export default function AdminOrdersPage() {
 
     try {
       await adminService.rejectOrder(id);
-      addNotification("Orden rechazada y stock devuelto", "info");
+      addNotification("Orden rechazada y stock devuelto", "success");
       fetchOrders(); // Refrescar lista
-    } catch (err) {
+    } catch {
       addNotification("Error al rechazar la orden", "error");
     }
   };
   const handleDelivered = async (id: string) => {
     try {
       await adminService.markAsDelivered(id);
-      addNotification("Orden entregada", "succes");
+      addNotification("Orden entregada", "success");
       fetchOrders(); // Refrescar lista
-    } catch (err) {
+    } catch {
       addNotification("Error marcar la orden como entregada", "error");
     }
   };
@@ -162,7 +165,7 @@ export default function AdminOrdersPage() {
           return (
             <button
               key={opt.value}
-              onClick={() => setFilter(opt.value as any)}
+              onClick={() => setFilter(opt.value as OrderStatusFilter)}
               className={`filter-btn ${isActive ? 'active' : ''}`}
               style={{ 
                 // Forzamos el borde izquierdo solo si está activo
