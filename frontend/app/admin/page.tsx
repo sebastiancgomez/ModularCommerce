@@ -71,7 +71,7 @@ export default function AdminPage() {
       {/* SECCIÓN PRINCIPAL: GESTIÓN DE ÓRDENES */}
       <div style={{ marginTop: 24 }}>
         <Link href="/admin/orders" className="card-link" prefetch={false}>
-          <div className="card-button" style={{ borderLeft: '4px solid #da1b1b', background: '#1a1a1a', padding: '20px' }}>
+          <div className="card-button" >
             <h3 style={{ fontSize: '1.4rem' }}>📦 Gestión de Órdenes</h3>
             <p>Revisa pagos, aprueba pedidos y gestiona envíos</p>
           </div>

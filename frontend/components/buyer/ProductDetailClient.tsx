@@ -66,8 +66,8 @@ export default function ProductDetailClient({ id }: { id: string }) {
 
   return (
     <div className="page">
-      <div className="grid-2">
-        <div className="card">
+      <div className="grid-2 card">
+        <div className="card-info">
           <Image 
             src={product.imageUrl || "/placeholder.jpg"} 
             alt={product.name} 
@@ -76,7 +76,7 @@ export default function ProductDetailClient({ id }: { id: string }) {
             unoptimized 
           />
         </div>
-        <div>
+        <div className='card-info' style={{textAlign: "center"}}>
           <h1>{product.name}</h1>
           <p className="price">${product.price.toLocaleString('es-CO')}</p>
           <p className="stock-info">
@@ -86,7 +86,7 @@ export default function ProductDetailClient({ id }: { id: string }) {
 
           <div className="flex-col" style={{ gap: '15px', marginTop: '20px' }}>
             {/* Selector de cantidad reutilizando tus clases */}
-            <div className={`selector-cantidad ${quantity >= availableStock ? 'at-limit' : ''}`}>
+            <div className={`quantity-selector ${quantity >= availableStock ? 'at-limit' : ''}`}>
               <button onClick={() => setQuantity(q => Math.max(1, q - 1))} disabled={quantity <= 1}> - </button>
               <span className="quantity-display">{quantity}</span>
               <button onClick={() => setQuantity(q => q + 1)} disabled={quantity >= availableStock}> + </button>
@@ -101,6 +101,7 @@ export default function ProductDetailClient({ id }: { id: string }) {
               >
                 Añadir al Carrito
               </button>
+
               <button 
                 className="button" 
                 onClick={handleBuyNow}

@@ -169,18 +169,15 @@ export default function AdminOrdersPage() {
               className={`filter-btn ${isActive ? 'active' : ''}`}
               style={{ 
                 // Forzamos el borde izquierdo solo si está activo
-                borderColor: isActive ? `${opt.color}` : '#333',
+                borderColor: isActive ? `${opt.color}` : '#3d3550',
                 borderLeft: `4px solid ${opt.color}`,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
                 paddingLeft: isActive ? '12px' : '16px', // Ajuste visual para compensar el borde grueso
-                transition: 'all 0.2s ease-in-out'
               }}
             >
               {opt.label}
               <span style={{ 
-                background: isActive ? opt.color : '#333', 
+                background: isActive ? opt.color : '#7c5cbf', 
+                marginLeft: '4px',
                 padding: '2px 8px', 
                 borderRadius: '10px', 
                 fontSize: '0.75rem',

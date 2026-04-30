@@ -1,6 +1,7 @@
 'use client';
 
 import { AdminOrder } from '@/lib/api/admin';
+import {  OrderItemResponse } from '@/types/Order';
 
 interface Props {
   order: AdminOrder;
@@ -29,9 +30,9 @@ export default function PrepareOrderModal({ order, onClose, onConfirm }: Props) 
         </div>
 
         <div className="picking-list" style={{ marginBottom: '25px' }}>
-          {order.items?.length ? order.items.map((item: any, index: number) => (
+          {order.items?.length ? order.items.map((item: OrderItemResponse, index: number) => (
             // Usamos item.id O index como respaldo para evitar el error de la key
-            <div key={item.id || `item-${index}`} style={itemRowStyle}>
+            <div key={item.productId || `item-${index}`} style={itemRowStyle}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', width: '100%' }}>
                 <input type="checkbox" style={{ width: '20px', height: '20px', cursor: 'pointer' }} />
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
@@ -47,15 +48,15 @@ export default function PrepareOrderModal({ order, onClose, onConfirm }: Props) 
 
         <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
           <button 
-            className="button-full" 
+            className="button button-full" 
             style={{ flex: 2, background: '#2e7d32' }} 
             onClick={() => onConfirm(order.id)}
           >
             ✅ Todo empacado - Listo
           </button>
           <button 
-            className="button-full" 
-            style={{ flex: 1, background: '#444' }} 
+            className="button-full button-secondary" 
+            style={{ flex: 1 }} 
             onClick={onClose}
           >
             Cancelar
