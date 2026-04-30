@@ -497,9 +497,13 @@ public class OrderService : IOrderService
         var order = await _context.Orders.FindAsync(id);
         if (order == null)
             throw new BusinessException("Order not found");
+        if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.PaymentPending)
+            throw new BusinessException("Solo se pueden editar órdenes en estado Pendiente.");
         // Actualizamos solo lo permitido
         order.Address = dto.Address;
         order.Phone = dto.Phone;
+        if(order.Status == OrderStatus.Pending)
+            order.VerifyOtp();
 
         await _context.SaveChangesAsync();
     }

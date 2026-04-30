@@ -48,11 +48,12 @@ public class OrdersController : ControllerBase
         try
         {
             var userEmailFromToken = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+            Console.WriteLine(userEmailFromToken);
 
             // VALIDACIÓN DE SEGURIDAD:
             // ¿El email que pide las órdenes es el mismo que validó el OTP?
             if (string.IsNullOrEmpty(userEmailFromToken) ||
-                !userEmailFromToken.Equals(email, StringComparison.OrdinalIgnoreCase))
+                !userEmailFromToken.ToLower().Trim().Equals(email.ToLower().Trim(), StringComparison.OrdinalIgnoreCase))
             {
                 return Forbid("No tienes permiso para acceder a los pedidos de este correo.");
             }
@@ -141,10 +142,6 @@ public class OrdersController : ControllerBase
         var order = await _service.GetById(id);
         if (order == null || order.Email.ToLower().Trim() != emailFromToken?.ToLower().Trim())
             return Forbid();
-
-        if (order.Status != "Pending")
-            return BadRequest("Solo se pueden editar órdenes en estado Pendiente.");
-
         await _service.RecoveryUpdate(id, dto);
         // Actualizamos solo lo permitido
         

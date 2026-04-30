@@ -1,6 +1,6 @@
 // lib/api/admin.ts
 import { fetchWithAuth } from './auth';
-import {OrderItemRequest} from "@/types/Order";
+import { OrderItemResponse} from "@/types/Order";
 
 export interface AdminOrder {
   id: string;
@@ -12,7 +12,7 @@ export interface AdminOrder {
   status: string;
   createdAt: string;
   paymentFileUrl?: string; // La URL de Cloudinary
-  items: OrderItemRequest[];
+  items: OrderItemResponse[];
 }
 
 export const adminService = {

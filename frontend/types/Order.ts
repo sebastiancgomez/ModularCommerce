@@ -29,6 +29,7 @@ export interface OrderResponse {
 export interface OrderItemResponse {
   id: string;
   productId: string;
+  productName:string;
   quantity: number;
-  priceAtPurchase: number; // Guardamos el precio del momento de la venta
+  unitPrice: number; // Guardamos el precio del momento de la venta
 }
