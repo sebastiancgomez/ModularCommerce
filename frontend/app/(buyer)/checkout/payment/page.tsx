@@ -53,13 +53,13 @@ function PaymentContent() {
       
       <div className="card" style={{ marginTop: '20px', border: '1px solid #333' }}>
         <p>Por favor, realiza la transferencia y sube la captura aquí:</p>
-        <div style={{ padding: '15px', background: '#111', borderRadius: '8px', margin: '15px 0' }}>
+        <div className='card-info'>
           <p><strong>Nequi / Daviplata:</strong></p>
           <p style={{ fontSize: '1.4rem', color: '#ff0000', margin: '5px 0' }}>300 123 4567</p>
           <p style={{ fontSize: '0.9rem' }}>A nombre de: Juan Cárdenas</p>
         </div>
 
-        <div className="flex-col" style={{ gap: '15px' }}>
+        <div className="card-info" style={{ gap: '15px' }}>
           <input 
             type="file" 
             accept="image/*" 

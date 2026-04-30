@@ -17,15 +17,15 @@ function SuccessContent() {
         Gracias por tu compra. Hemos recibido tu comprobante de pago.
       </p>
 
-      <div className="card" style={{ background: '#111', border: '1px solid #333', padding: '20px' }}>
-        <p style={{ color: '#888', margin: '0 0 10px 0' }}>Número de Orden:</p>
+      <div className="card" >
+        <p >Número de Orden:</p>
         {/* Usamos un fallback por si el orderId no llega por alguna razón */}
-        <strong style={{ fontSize: '1rem', color: '#fff', wordBreak: 'break-all' }}>
+        <strong style={{ fontSize: '1rem',  wordBreak: 'break-all' }}>
           {orderId || 'No disponible'}
         </strong>
       </div>
       
-      <p style={{ marginTop: '30px', color: '#ccc' }}>
+      <p style={{ marginTop: '30px' }}>
         Ahora nuestro equipo validará el pago. Te enviaremos un correo electrónico cuando tu pedido sea despachado.
       </p>
 

@@ -107,20 +107,25 @@ export default function CheckoutPage() {
           />
         </div>
 
-        <div className="card">
+        <div className="card-info">
           <h3>Resumen del Pedido</h3>
+          <table width='100%'>
+            <tbody>
           {items.map(item => (
-            <div key={item.productId} className="flex-row justify-between">
-              <span>{item.name} (x{item.quantity})</span>
-              <span>${(item.price * item.quantity).toLocaleString('es-CO')}</span>
-            </div>
+            <tr key={item.productId} className="flex-row justify-between">
+              <td >{item.name} (x{item.quantity})</td>
+              <td >${(item.price * item.quantity).toLocaleString('es-CO')}</td>
+            </tr>
           ))}
-          <hr />
-          <div className="flex-row justify-between" style={{ fontWeight: 'bold' }}>
-            <span>Total a pagar:</span>
-            <span>${getTotal().toLocaleString('es-CO')}</span>
-          </div>
+          <tr><td colSpan={2}><hr /></td></tr>
+          <tr className="flex-row justify-between" style={{ fontWeight: 'bold' }}>
+            <td>Total a pagar:</td>
+            <td>${getTotal().toLocaleString('es-CO')}</td>
+          </tr>
+          </tbody>
+          </table>
         </div>
+        
 
         <button type="submit" className="button button-full" disabled={loading || items.length === 0}>
           {loading ? 'Procesando...' : 'Confirmar Pedido'}

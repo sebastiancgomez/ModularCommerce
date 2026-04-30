@@ -61,8 +61,9 @@ function VerifyOTPContent() {
     if (code.length < 6) return;
 
     setLoading(true);
+    const order = await orderService.getById(orderId!);
     try {
-      await orderService.verifyOtp(orderId!, code, "OrderConfirmation");
+      await orderService.verifyOtp(order.email!, code, "OrderConfirmation");
       
       addNotification("¡Código verificado con éxito!", "success");
       clearCart(); // AHORA SÍ limpiamos el carrito
