@@ -1,4 +1,4 @@
-import { getCategories } from "@/lib/api";
+import { getCategories } from "@/lib/api/categories";
 import CategoryManager from "@/components/admin/CategoryManager";
 
 export default async function CategoriesPage() {

@@ -20,6 +20,9 @@
     {
         public Guid Id { get; set; }
         public string Email { get; set; } = string.Empty;
+        public string FullName { get; set; } =string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
@@ -39,9 +42,14 @@
     {
         public Guid Id { get; set; }
         public string Email { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Phone { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
+        public string PaymentFileUrl { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public List<OrderItemResponseDto> Items { get; set; } = new();
     }
     public class OrderAdminDetailDto
     {
@@ -56,5 +64,11 @@
 
         public List<OrderItemResponseDto> Items { get; set; } = new();
         public List<string> Receipts { get; set; } = new();
+    }
+    public class UpdateOrderRecoveryDto
+    {
+        public Guid Id { get; set; }
+        public string Phone { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
     }
 }

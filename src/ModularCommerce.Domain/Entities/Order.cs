@@ -29,6 +29,9 @@ public class Order
         var order = new Order
         {
             Email = email,
+            FullName = fullName, 
+            Phone = phone,
+            Address = address,
             Status = OrderStatus.Pending
         };
 
@@ -87,10 +90,24 @@ public class Order
 
         Status = OrderStatus.Cancelled;
     }
+    public void Prepare()
+    {
+        if (Status != OrderStatus.Paid)
+            throw new BusinessException("Order not in paid");
+
+        Status = OrderStatus.Preparing;
+    }
     public void Deliver()
     {
         if (Status != OrderStatus.Preparing)
             throw new BusinessException("Order not in preparation");
+
+        Status = OrderStatus.Delivering;
+    }
+    public void Delivered()
+    {
+        if (Status != OrderStatus.Delivering)
+            throw new BusinessException("Order not in deliver");
 
         Status = OrderStatus.Delivered;
     }
@@ -103,6 +120,7 @@ public enum OrderStatus
     Paid = 4,    
     Rejected = 5,
     Preparing = 6,
-    Delivered = 7,
-    Cancelled = 8
+    Delivering = 7,
+    Delivered = 8,
+    Cancelled = 9
 }

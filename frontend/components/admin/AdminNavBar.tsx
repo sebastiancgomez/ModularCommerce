@@ -8,22 +8,30 @@ export default function AdminNavbar() {
   
   return (
     <nav className="navbar">
-      <div
-        className="dropdown"
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-      >
-        <span style={{ cursor: "pointer" }}>
-          Administrar Catálogo
-        </span>
+      {/* Contenedor para agrupar los links a la izquierda */}
+      <div className="nav-links-container" style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+        
+        <Link href="/admin/orders" prefetch={false} className="nav-link-item">
+          Órdenes
+        </Link>
 
-        {open && (
-          <div className="dropdown-menu">
-            <Link href="/admin/categories" prefetch={false}>Categorías</Link>
-            <Link href="/admin/subcategories" prefetch={false}>Subcategorías</Link>
-            <Link href="/admin/products" prefetch={false}>Productos</Link>
-          </div>
-        )}
+        <div
+          className="dropdown"
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
+          <span className="dropdown-label">
+            Administrar Catálogo {open ? '▴' : '▾'}
+          </span>
+
+          {open && (
+            <div className="dropdown-menu">
+              <Link href="/admin/categories" prefetch={false} className="dropdown-item">Categorías</Link>
+              <Link href="/admin/subcategories" prefetch={false} className="dropdown-item">Subcategorías</Link>
+              <Link href="/admin/products" prefetch={false} className="dropdown-item">Productos</Link>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );

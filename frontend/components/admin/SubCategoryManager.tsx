@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react"; // 1. Importamos useEffect
-import { createSubCategory, getSubCategories, getCategories } from "@/lib/api"; // 2. Importamos getCategories
+import { createSubCategory, getSubCategories } from "@/lib/api/subCategories"; // 2. Importamos getCategories
+import{getCategories} from  "@/lib/api/categories";
 import type { Category } from "@/types/Category";
 import type { SubCategory } from "@/types/SubCategory";
 

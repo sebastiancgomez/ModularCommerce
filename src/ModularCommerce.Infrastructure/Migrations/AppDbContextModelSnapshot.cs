@@ -108,36 +108,6 @@ namespace ModularCommerce.Infrastructure.Migrations
                     b.ToTable("OrderItems", "public");
                 });
 
-            modelBuilder.Entity("ModularCommerce.Domain.Entities.OrderOtp", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Attempts")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("Expiration")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderOtps", "public");
-                });
-
             modelBuilder.Entity("ModularCommerce.Domain.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -269,6 +239,41 @@ namespace ModularCommerce.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", "public");
+                });
+
+            modelBuilder.Entity("UserOtp", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserOtps", "public");
                 });
 
             modelBuilder.Entity("ModularCommerce.Domain.Entities.OrderItem", b =>

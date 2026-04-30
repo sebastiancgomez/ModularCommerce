@@ -1,4 +1,5 @@
-import { getCategories, getSubCategories } from "@/lib/api";
+import { getCategories } from "@/lib/api/categories";
+import { getSubCategories } from "@/lib/api/subCategories";
 import SubCategoryManager from "@/components/admin/SubCategoryManager";
 
 export default async function SubCategoriesPage() {

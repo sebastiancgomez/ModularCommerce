@@ -4,7 +4,7 @@ import { useRef, useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { Product } from "@/types/Product";
 import ProductCard from "./ProductCard";
-import { getProducts } from "@/lib/api";
+import { getProducts } from "@/lib/api/products";
 
 type Props = {
   products: Product[];

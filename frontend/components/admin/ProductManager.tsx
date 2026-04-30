@@ -3,12 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 // Importamos el Widget
 import { CldUploadWidget } from "next-cloudinary";
+import {getCategories} from "@/lib/api/categories";
 import {
   getProducts,
   createProduct,
   updateProduct,
-  getCategories
-} from "@/lib/api";
+} from "@/lib/api/products";
 
 import { Product } from "@/types/Product";
 import { Category } from "@/types/Category";

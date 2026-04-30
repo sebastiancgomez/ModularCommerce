@@ -9,15 +9,20 @@ public interface IOrderService
     Task<Guid> Create(CreateOrderDto dto);
     Task<OrderResponseDto?> GetById(Guid id);
     Task<List<OrderResponseDto>> GetAll();
+    Task<List<OrderResponseDto>> GetByEmail(string email);
     Task UpdateStatus(Guid id, OrderStatus status);
-    Task<(bool Success, string Message)> VerifyOtp(VerifyOtpDto dto);
-    Task<string> ResendOtp(Guid orderId);
+    Task<(bool Success, string Message, string Token)> VerifyOtp(VerifyOtpDto dto);
+    Task<string> ResendOtp(string email);
     Task<string> UploadReceipt(UploadReceiptDto dto);
     Task<List<OrderAdminListDto>> GetAdminOrders();
     Task<OrderAdminDetailDto?> GetAdminOrderById(Guid id);
     Task ApproveOrder(Guid id);
     Task RejectOrder(Guid id);
-    Task MarkAsUnderReview(Guid id);
+    //Task MarkAsUnderReview(Guid id);
     Task CancelOrder(Guid orderId);
+    Task PrepareOrder(Guid id);
+    Task DispatchOrder(Guid id);
     Task MarkAsDelivered(Guid orderId);
+    Task RequestLookupOtp(string email);
+    Task RecoveryUpdate(Guid orderId, UpdateOrderRecoveryDto dto);
 }
