@@ -20,6 +20,7 @@ export interface OrderResponse {
   email: string;
   phone: string;
   address: string;
+  mapUrl: string;
   createdAt: string;
   totalAmount: number;
   status: string;
