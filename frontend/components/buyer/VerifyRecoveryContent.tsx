@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { orderService } from '@/lib/api/orders';
 import { useNotificationStore } from '@/store/useNotificationStore';
 import { OrderItemResponse, OrderResponse } from '@/types/Order';
+import MapSelector from '@/components/ui/MapSelector';
 
 
 export default function CheckoutRecoveryContent() {
@@ -18,6 +19,7 @@ export default function CheckoutRecoveryContent() {
   
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
+  const [mapUrl, setMapUrl] = useState('');
   
 
   useEffect(() => {
@@ -32,6 +34,7 @@ export default function CheckoutRecoveryContent() {
         setOrder(data);
         setAddress(data.address);
         setPhone(data.phone);
+        setMapUrl(data.mapUrl);
       } catch {
         addNotification("Error al cargar la orden", "error");
       } finally {
@@ -45,7 +48,8 @@ export default function CheckoutRecoveryContent() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await orderService.updateRecoveryData(orderId!, { address, phone });
+      console.info(mapUrl);
+      await orderService.updateRecoveryData(orderId!, { address, phone, mapUrl });
       router.push(`/checkout/payment?orderId=${orderId}`);
     } catch {
       addNotification("Error al actualizar datos", "error");
@@ -77,16 +81,15 @@ export default function CheckoutRecoveryContent() {
             </label>
           </div>
           <div className="flex-col">
-            <label className="label-field" style={{ fontWeight: '600', fontSize: '0.9rem' }}>Dirección de Envío
-                <input 
-                    type="text" 
-                    className="input" 
-                    value={address} 
-                    onChange={(e) => setAddress(e.target.value)} 
-                    required 
-                    placeholder="Ej: Calle 10 #20-30"
-                />
-            </label>            
+            <label className="label-field" style={{ fontWeight: '600', fontSize: '0.9rem' }}>Dirección de Envío</label>
+            <MapSelector 
+              initialAddress={address}
+              initialUrl={mapUrl}
+              onLocationChange={(addr, url) => {
+                setAddress(addr);
+                setMapUrl(url);
+              }}
+            />
           </div>
           <div className="flex-col">
             <label className="label-field" style={{ fontWeight: '600', fontSize: '0.9rem' }}>Teléfono de Contacto
@@ -123,15 +126,6 @@ export default function CheckoutRecoveryContent() {
              Confirmar y Pagar 💳
            </button>
         </div>
-          {/*<div style={{ marginTop: '10px', borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
-             <div className="justify-between" style={{ fontSize: '1.2rem', marginBottom: '20px' }}>
-                <span style={{ fontWeight: '500' }}>Total a pagar:</span>
-                <strong >${order?.totalAmount.toLocaleString()}</strong>
-             </div>             
-             <button type="submit" className="button button-primary button-full">
-               Confirmar y Pagar 💳
-             </button>
-          </div>*/}
         </form>
       </div>
  

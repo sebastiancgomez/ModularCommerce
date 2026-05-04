@@ -6,6 +6,7 @@ import { orderService } from '@/lib/api/orders';
 import { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import { OrderRequest } from '@/types/Order';
+import MapSelector from '@/components/ui/MapSelector';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function CheckoutPage() {
     email: '',
     phone: '',
     address: '',
+    mapUrl: '',
     city: 'Cali'
   });
 
@@ -98,13 +100,13 @@ export default function CheckoutPage() {
             value={formData.phone}
             onChange={(e) => setFormData({...formData, phone: e.target.value})}
           />
-          <input 
-            type="text" 
-            placeholder="Dirección de entrega" 
-            required 
-            value={formData.address}
-            onChange={(e) => setFormData({...formData, address: e.target.value})}
-          />
+          <div className="flex-col">
+            <label className="label-field">Dirección de Envío</label>
+            <MapSelector 
+              initialAddress={formData.address}
+              onLocationChange={(addr, url) => setFormData({ ...formData, address: addr, mapUrl: url })}
+            />
+          </div>
         </div>
 
         <div className="card-info">
