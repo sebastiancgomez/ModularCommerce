@@ -438,7 +438,7 @@ input:-webkit-autofill:active {
 /* ============================================================
    HEADER
    ============================================================ */
-.header {
+/*.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -449,7 +449,50 @@ input:-webkit-autofill:active {
 }
 
 .logo    { font-weight: bold; }
-.actions { display: flex; gap: 12px; align-items: center; }
+.actions { display: flex; gap: 12px; align-items: center; }*/
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--primary);
+  color: var(--text);
+  gap: 20px;
+}
+
+/* Forzamos a que los tres contenedores principales ocupen el mismo espacio */
+.header > .logo,
+.header > .search-container,
+.header > .actions {
+  flex: 1; /* Todos intentan ocupar el mismo ancho disponible */
+}
+
+/* El logo se alinea a la izquierda */
+.header > .logo {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* La búsqueda se centra respecto a la pantalla, no a los vecinos */
+.header > .search-container {
+  display: flex;
+  justify-content: center;
+  max-width: 600px; /* Evita que crezca demasiado en pantallas gigantes */
+}
+
+/* Las acciones (links/carrito) se alinean a la derecha */
+.header > .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Ajuste para que la barra interna no se rompa */
+.search-container .search-input-wrapper {
+  width: 100%; 
+}
 
 /* ============================================================
    PRODUCT GRID
@@ -1015,6 +1058,21 @@ input:-webkit-autofill:active {
   align-items: center;
   gap: 12px;
   animation: slideInLeft 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+/*============================================================
+   BREADCRUMBS   
+   ============================================================ */
+.breadcrumbs {
+  display: flex; /* Crucial para que estén en línea */
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ============================================================

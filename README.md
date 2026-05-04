@@ -1,190 +1,150 @@
-
-# ModularCommerce Fullstack
+# ModularCommerce Fullstack 🛒 🇨🇴/🇺🇸
 
 ![.NET](https://img.shields.io/badge/.NET-8-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-Frontend-black)
+![Google Maps](https://img.shields.io/badge/Google%20Maps-Geocoding-4285F4)
 ![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
-## Overview
-
-ModularCommerce is a fullstack e-commerce platform designed for small businesses.  
-It includes a backend API for order management and a frontend catalog built with Next.js.
-
-The architecture is prepared to evolve into a SaaS multi-tenant solution.
+## 🌎 Language / Idioma
+- [English](#overview-en)
+- [Español](#resumen-es)
 
 ---
 
-## Tech Stack
+## <a name="overview-en"></a>Overview (EN)
+
+**ModularCommerce** is a fullstack e-commerce platform designed for small businesses, optimized for frictionless conversion and high logistics precision. It features a robust **.NET 8** backend and a high-performance **Next.js** frontend.
+
+The architecture is built with a **SaaS Multi-tenant** vision, ensuring scalability and modularity from the ground up.
+
+### 🚀 Key AI-Augmented Features
+- **Smart Geolocation:** Interactive Google Maps integration allowing users to pinpoint exact delivery locations via draggable markers.
+- **Reverse Geocoding:** Automated conversion of map coordinates into human-readable addresses.
+- **Intelligent Order Recovery:** A secure post-checkout flow that allows users to correct contact details and delivery locations without losing order state.
+
+---
+
+## <a name="resumen-es"></a>Resumen (ES)
+
+**ModularCommerce** es una plataforma e-commerce de alto impacto diseñada para pequeños negocios, optimizada para una conversión sin fricciones y una alta precisión logística. Cuenta con un backend robusto en **.NET 8** y un frontend de alto rendimiento en **Next.js**.
+
+La arquitectura está construida con una visión **SaaS Multi-tenant**, asegurando escalabilidad y modularidad desde su concepción.
+
+### 🚀 Características Clave (IA-Asistida)
+- **Geolocalización Inteligente:** Integración interactiva con Google Maps que permite a los usuarios marcar puntos exactos de entrega mediante marcadores arrastrables.
+- **Geocodificación Inversa:** Conversión automática de coordenadas de mapa en direcciones de texto legibles.
+- **Recuperación Inteligente de Órdenes:** Flujo seguro post-checkout que permite a los usuarios corregir datos de contacto y ubicación sin perder el estado de la orden.
+
+---
+
+## 🛠 Tech Stack / Tecnologías
 
 ### Backend
-- .NET 8
-- Entity Framework Core
-- PostgreSQL
-- Docker
-- MailKit
-- JWT Authentication
+- **.NET 8** (Web API)
+- **Entity Framework Core** (Migrations & Design Time Factory)
+- **PostgreSQL 17**
+- **Docker**
+- **MailKit** (SMTP for OTP & Notifications)
+- **JWT Authentication**
 
 ### Frontend
-- Next.js (App Router)
-- TypeScript
-- CSS Modules
-- Zustand (State Management & Persistence)
+- **Next.js (App Router)**
+- **TypeScript**
+- **Google Maps Platform** (Places & Geocoding API)
+- **Zustand** (State Management & Persistence)
+- **CSS Modules**
 
 ---
 
-## Features
+## ✨ Features / Funcionalidades
 
-### Orders
-- No-Login Flow: Guest checkout support for frictionless conversion.
-- Stock Validation: Real-time frontend validation against backend inventory.
-- Persistent Cart: Cart state remains safe after page refreshes (localStorage sync).
-- OTP Verification: Secure order confirmation via one-time password.
-- Payment receipt upload & Manual validation.
-- Order lifecycle management
+### Orders & Logistics / Órdenes y Logística
+- **No-Login Flow:** Guest checkout support for frictionless conversion.
+- **Interactive Maps:** Google Maps Selector with real-time address synchronization via draggable pin.
+- **Stock Validation:** Real-time frontend validation against backend inventory.
+- **OTP Verification:** Secure order confirmation via one-time password.
+- **Payment Management:** Receipt upload and manual admin validation.
+- **Order Recovery:** Securely update address and phone after order creation.
+- **Order Lifecycle Management:** Full status tracking from Pending to Delivered.
 
-### OTP
-- Code generation
-- Expiration control
-- Attempt limits
-
-### Payments
-- Upload receipts
-- Manual validation
-- Approval or rejection
-
-### Frontend
-- Product catalog
-- Category grouping
-- Carousel per category
-- Dynamic theming
-- Live Search: Debounced product search with instant results.
-- Dynamic Catalog: Category grouping with optimized carousels.
-- Responsive Toast Notifications: Real-time feedback for cart actions.
-- Skeleton Loading: Improved perceived performance during data fetching
-- Admin panel  
+### Frontend Experience / Experiencia de Usuario
+- **Product Catalog:** Dynamic grouping and category carousels.
+- **Live Search:** Debounced product search with instant results.
+- **Dynamic Theming:** Configurable branding and UI feedback.
+- **Skeleton Loading:** Improved perceived performance during data fetching.
+- **Persistent Cart:** Cart state remains safe after page refreshes (localStorage sync).
+- **Admin Panel:** Complete dashboard for order and product management.
 
 ---
 
-## Order Status Flow
+## 🔄 Order Status Flow / Flujo de Estados
 
-- Pending: Order created  
-- PaymentPending: OTP verified  
-- UnderReview: Receipt uploaded  
-- Paid: Payment approved  
-- Rejected: Payment rejected  
-- Preparing: Order being prepared  
-- Delivered: Order delivered  
-- Cancelled: Cancelled before payment  
-
----
-
-## API Endpoints
-
-### Auth
-POST /api/auth/login  
-Returns JWT token
+- **Pending (Pendiente):** Order created / Orden creada.
+- **PaymentPending (Pago Pendiente):** OTP verified / OTP verificado.
+- **UnderReview (En Revisión):** Receipt uploaded / Comprobante subido.
+- **Paid (Pagado):** Payment approved / Pago aprobado.
+- **Rejected (Rechazado):** Payment rejected / Pago rechazado.
+- **Preparing (Preparando):** Order being prepared / En alistamiento.
+- **Delivered (Entregado):** Order delivered / Entregado.
+- **Cancelled (Cancelado):** Cancelled before payment / Cancelado antes del pago.
 
 ---
 
-### Orders
+## 📂 Project Structure / Estructura
 
-POST /api/orders  
-Create order
-
-GET /api/orders/{id}  
-Get order by id
-
-POST /api/orders/verify-otp  
-Verify OTP
-
-POST /api/orders/upload-receipt  
-Upload payment receipt
-
-POST /api/orders/{id}/approve  
-Approve payment
-
-POST /api/orders/{id}/reject  
-Reject payment
-
-POST /api/orders/{id}/prepare  
-Mark as preparing
-
-POST /api/orders/{id}/deliver  
-Mark as delivered
-
-POST /api/orders/{id}/cancel  
-Cancel order
-
----
-
-### Products
-
-GET /api/products  
-List products
-
-GET /api/products/{id}  
-Get product
-
-POST /api/products  
-Create product
-
----
-
-## Project Structure
 
 /backend
   /src
-    /ModularCommerce.Api          # Endpoints & Controllers
-    /ModularCommerce.Application  # DTOs, Mappers, Business Logic
-    /ModularCommerce.Domain       # Entities & Value Objects
-    /ModularCommerce.Infrastructure # Data Access & External Services
+    /ModularCommerce.Api           # Endpoints & Controllers
+    /ModularCommerce.Application   # DTOs, Mappers, Business Logic
+    /ModularCommerce.Domain        # Entities & Value Objects
+    /ModularCommerce.Infrastructure # Data Access, Migrations & External Services
 
 /frontend
   /app
-    /(buyer)                      # Public catalog & Checkout routes
-    /admin                        # Backoffice routes
-    /login                        # Auth routes
+    /(buyer)                       # Public catalog, Checkout & Recovery routes
+    /admin                         # Backoffice & Management dashboards
+    /login                         # Auth routes
   /components
-    /buyer                        # Catalog, Search & Cart components
-    /admin                        # Management dashboards
-  /store                          # Zustand stores (Cart, Notifications)
-  /types                          # TypeScript Interfaces (Product, Order, Cart)
-  /hooks                          # Custom React Hooks
-  /lib                            # API Client & Utilities
-docker-compose.yml  
-.env  
+    /ui                            # Reusable components (MapSelector, Inputs)
+    /buyer                         # Catalog & Cart components
+    /admin                         # Management dashboards
+  /store                           # Zustand stores (Cart, Notifications)
+  /hooks                           # Custom React Hooks
+  /lib                             # API Client & Utilities
 
 ---
 
-## Environment Variables
+## Environment Variables / Variables de Entorno
 
-Create a .env file:
+Create a .env file for backend and .env.local for frontend:
 
-ADMIN_EMAIL=admin@email.com  
-ADMIN_PASSWORD=your_password  
+# Backend
+ADMIN_EMAIL=admin@email.com
+ADMIN_PASSWORD=your_password
+JWT_KEY=your_secret
+DB_HOST=postgres
+DB_PORT=5432
+DB_NAME=modularcommerce
+DB_USER=your_user
+DB_PASSWORD=your_password
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=your@email.com
+SMTP_PASS=your_password_16chars
+STORAGE_RECEIPTS_PATH=receipts
 
-JWT_KEY=your_secret  
-
-DB_HOST=postgres  
-DB_PORT=5432  
-DB_NAME=modularcommerce  
-DB_USER=your_user  
-DB_PASSWORD=your_password  
-
-SMTP_HOST=smtp.gmail.com  
-SMTP_PORT=465  
-SMTP_USER=your@email.com  
-SMTP_PASS=your_password_16chars  
-
-STORAGE_RECEIPTS_PATH=receipts  
+# Frontend
+NEXT_PUBLIC_GOOGLE_MAPS_KEY=your_google_maps_api_key
+NEXT_PUBLIC_API_URL=http://localhost:8080/api
 
 ---
 
-## Running Locally
+## Running Locally / Ejecución Local
 
 ### Backend
 
