@@ -10,6 +10,7 @@ public class Order
     public string FullName { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
+    public string MapUrl { get; set; } = string.Empty;
 
     public decimal TotalAmount { get; set; }
 
@@ -24,6 +25,7 @@ public class Order
         string fullName,
         string phone,
         string address,
+        string mapUrl,
         List<(Product product, int quantity)> products)
     {
         var order = new Order
@@ -32,6 +34,7 @@ public class Order
             FullName = fullName, 
             Phone = phone,
             Address = address,
+            MapUrl = mapUrl,
             Status = OrderStatus.Pending
         };
 

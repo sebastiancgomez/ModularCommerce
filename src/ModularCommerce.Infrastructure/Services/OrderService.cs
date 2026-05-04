@@ -46,6 +46,7 @@ public class OrderService : IOrderService
             dto.FullName,
             dto.Phone,
             dto.Address,
+            dto.MapUrl,
             products
         );
 
@@ -90,6 +91,7 @@ public class OrderService : IOrderService
                 FullName = o.FullName,
                 Phone = o.Phone,
                 Address = o.Address,
+                MapUrl = o.MapUrl,
                 TotalAmount = o.TotalAmount,
                 Status = o.Status.ToString(),
                 CreatedAt = o.CreatedAt,
@@ -502,6 +504,7 @@ public class OrderService : IOrderService
         // Actualizamos solo lo permitido
         order.Address = dto.Address;
         order.Phone = dto.Phone;
+        order.MapUrl = dto.MapUrl;
         if(order.Status == OrderStatus.Pending)
             order.VerifyOtp();
 

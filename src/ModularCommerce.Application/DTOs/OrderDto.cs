@@ -6,6 +6,7 @@
         public string FullName { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public string MapUrl { get; set; } = string.Empty;
 
         public List<OrderItemDto> Items { get; set; } = new();
     }
@@ -23,6 +24,7 @@
         public string FullName { get; set; } =string.Empty;
         public string Phone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public string MapUrl { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
@@ -70,5 +72,6 @@
         public Guid Id { get; set; }
         public string Phone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
+        public string MapUrl { get; set; } = string.Empty;
     }
 }

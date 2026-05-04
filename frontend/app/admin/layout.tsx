@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import AdminNavbar from "@/components/admin/AdminNavBar"; // Ajusta la ruta si es distinta
-import AdminHeader from "@/components/admin/AdminHeader"; // Ajusta la ruta si es distinta
+import AdminNavbar from "@/components/admin/AdminNavBar"; 
+import AdminHeader from "@/components/admin/AdminHeader"; 
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 
 
 type Props = {
@@ -50,6 +51,7 @@ export default function AdminLayout({ children }: Props) {
       <div>
         <AdminHeader />
         <AdminNavbar />
+        <Breadcrumbs />
         <main style={{ flex: 1, padding: '20px' }}>
           {children}
         </main>

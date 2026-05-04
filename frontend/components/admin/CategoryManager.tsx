@@ -32,7 +32,7 @@ export default function CategoryManager({ initialCategories }: Props) {
   return (
     <div>
     <div className="card" style={{ width: "50%" }}>
-      <h3 className="card-header">Crear Categoria</h3>
+      <h3 className="card-header">Crear Categoría</h3>
 
       <div className="flex-1">
         <input
@@ -54,7 +54,7 @@ export default function CategoryManager({ initialCategories }: Props) {
       </div>
 
       <div className="card" style={{ width: "50%" }}>
-        <h2 className="card-header">Categorias Existentes</h2>  
+        <h2 className="card-header">Categorías Existentes</h2>  
 
       <ul className="grid-2 ul-1">
         {categories.map((c) => (

@@ -66,7 +66,7 @@ export const orderService = {
    * Actualiza parcialmente la dirección y el teléfono.
    * Usado justo antes de saltar a la pasarela de pago.
    */
-  updateRecoveryData: async (id: string, data: { address: string; phone: string }) => {
+  updateRecoveryData: async (id: string, data: { address: string; phone: string; mapUrl:string }) => {
     const response = await apiFetchWithAuthBuyer(`/orders/${id}/recovery-update`, {
       method: 'PATCH',
       body: JSON.stringify(data),

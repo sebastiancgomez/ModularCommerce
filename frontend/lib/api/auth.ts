@@ -17,25 +17,36 @@ export async function login(payload: Partial<LoginCredentials>) {
 }
 
 
-export function getAuthHeaders(): Record<string, string> {
+export type AuthContext = 'admin' | 'buyer';
+
+export function getAuthHeaders(context?: AuthContext): Record<string, string> {
   if (typeof window === "undefined") return {};
 
-  // 1. Intentar obtener token de Admin (Cookie)
-  let token = document.cookie
-    .split("; ")
-    .find(row => row.startsWith("token="))
-    ?.split("=")[1];
+  let token: string | undefined;
 
-  // 2. Si no hay de Admin, buscar el de Buyer (sessionStorage)
-  if (!token) {
+  // 1. Si pedimos específicamente Admin
+  if (context === 'admin') {
+    token = document.cookie
+      .split("; ")
+      .find(row => row.startsWith("token="))
+      ?.split("=")[1];
+  } 
+  // 2. Si pedimos específicamente Buyer
+  else if (context === 'buyer') {
     token = sessionStorage.getItem('buyer_token') || undefined;
+  } 
+  // 3. Comportamiento por defecto (mantiene compatibilidad con lo que ya tienes)
+  else {
+    token = document.cookie.split("; ").find(row => row.startsWith("token="))?.split("=")[1] 
+            || sessionStorage.getItem('buyer_token') 
+            || undefined;
   }
-  console.log(token);
+
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 export async function apiFetchWithAuthBuyer(endpoint: string , options: RequestInit = {}): Promise<Response> {
-  const response =  await fetchWithAuthHeaders(endpoint, options);
+  const response =  await fetchWithAuthHeaders(endpoint, options, 'buyer');
 
   if (response.status === 401 || response.status === 403) {
     // Si el servidor rechaza el token:
@@ -56,7 +67,7 @@ export async function apiFetchWithAuthBuyer(endpoint: string , options: RequestI
   return response;
 }
 export async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
-  const res = await fetchWithAuthHeaders(url, options);
+  const res = await fetchWithAuthHeaders(url, options, 'admin');
 
   if (res.status === 401) {
     if (typeof window !== "undefined") {
@@ -76,11 +87,11 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}): Pro
 
   return res;
 }
-async function fetchWithAuthHeaders(url: string, options: RequestInit = {}): Promise<Response> {
+async function fetchWithAuthHeaders(url: string, options: RequestInit = {}, context?: AuthContext): Promise<Response> {
   // 1. Preparamos los headers combinando Content-Type, Auth y los que vengan por params
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-    ...getAuthHeaders(), 
+    ...getAuthHeaders(context), 
     ...(options.headers as Record<string, string> || {}),
   };
 
