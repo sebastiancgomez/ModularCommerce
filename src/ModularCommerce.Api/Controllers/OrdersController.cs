@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ModularCommerce.Application.DTOs;
@@ -133,18 +134,32 @@ public class OrdersController : ControllerBase
         }
     }
     [HttpPatch("{id}/recovery-update")]
-    [Authorize] // El token del OTP ya nos da la seguridad necesaria
+    [Authorize]
     public async Task<IActionResult> RecoveryUpdate(Guid id, [FromBody] UpdateOrderRecoveryDto dto)
     {
-        // Validar que la orden pertenezca al email del token (Seguridad extra)
-        var emailFromToken = User.FindFirst(ClaimTypes.Email)?.Value;
+        try
+        {
+            var order = await _service.GetById(id);
+            if (order == null) return NotFound();
 
-        var order = await _service.GetById(id);
-        if (order == null || order.Email.ToLower().Trim() != emailFromToken?.ToLower().Trim())
-            return Forbid();
-        await _service.RecoveryUpdate(id, dto);
-        // Actualizamos solo lo permitido
-        
-        return Ok(new { message = "Datos actualizados correctamente" });
+            // 1. Extraer datos del Token
+            var emailFromToken = User.FindFirst(ClaimTypes.Email)?.Value?.ToLower().Trim();
+            var isAdmin = User.IsInRole("Admin"); // O el nombre exacto de tu rol de admin
+            // 2. Nueva lógica de autorización:
+            // "Si NO es admin Y el email no coincide, entonces prohibido"
+            bool isOwner = order.Email.ToLower().Trim() == emailFromToken;
+
+            if (!isAdmin && !isOwner)
+            {
+                return Forbid();
+            }
+
+            await _service.RecoveryUpdate(id, dto);
+            return Ok(new { message = "Datos actualizados correctamente" });
+        }
+        catch (Exception ex)
+        {
+            return Ok(new { message = ex.Message });
+        }
     }
 }
