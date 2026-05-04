@@ -61,7 +61,7 @@ export default function SubCategoryManager({
   return (
     <div>
       <div className="card">
-        <h2 className="card-header">Crear Subcategoria</h2>
+        <h2 className="card-header">Crear Subcategoría</h2>
 
         <div className="grid-2">
             <select
@@ -95,10 +95,10 @@ export default function SubCategoryManager({
       </div>
 
       <div className="card">  
-        <h2 className="card-header">Subcategorias Existentes</h2>
+        <h2 className="card-header">Subcategorías Existentes</h2>
         <div className="grid-2">
-          <h3 className="card-header">SubCategoria</h3>
-          <h3 className="card-header">Categoria</h3>
+          <h3 className="card-header">Subcategoría</h3>
+          <h3 className="card-header">Categoría</h3>
         </div>
         <div>
             {subCategories.map((s) => (
