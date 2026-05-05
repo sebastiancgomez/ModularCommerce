@@ -39,6 +39,7 @@ export default function CheckoutPage() {
       email: formData.email,
       phone: formData.phone,
       address: formData.address,
+      mapUrl: formData.mapUrl,
       items: items.map(item => ({
         productId: item.productId,
         quantity: item.quantity,
