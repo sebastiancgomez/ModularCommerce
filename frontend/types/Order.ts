@@ -4,6 +4,7 @@ export interface OrderRequest {
   email: string;
   phone: string;
   address: string;
+  mapUrl: string;
   items: OrderItemRequest[];
 }
 
